@@ -6,7 +6,7 @@
   <xacro:arg name="controller_conf_yaml_file" default=""/>
 
   <xacro:include filename="$(find alpo_description)/urdf/alpo.xacro" />
-  <xacro:adap2e model="fat" use_sim="$(arg use_sim)" prefix="$(arg prefix)"/>
+  <xacro:alpo model="4x4" use_sim="$(arg use_sim)" prefix="$(arg prefix)"/>
 
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">

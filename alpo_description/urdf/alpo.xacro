@@ -6,9 +6,10 @@
   <xacro:macro name="alpo" params="model use_sim prefix">
 
     <xacro:include filename="$(find alpo_description)/urdf/color.xacro" />
-    <xacro:include filename="$(find romea_odo_description)/urdf/2FWS_4WD_chassis.xacro"/>
+    <xacro:include filename="$(find romea_mobile_base_description)/urdf/2FWS_4WD_chassis.xacro"/>
+    <xacro:include filename="$(find romea_mobile_base_description)/ros2_control/2FWS_4WD.ros2_control.xacro"/>
 
-    <xacro:property name="conf" value="$(find adap2e_description)/config/alpo_${model}.yaml" />
+    <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
     <xacro:property name="props" value="${load_yaml(conf)['/**']['ros__parameters']['base_info']}" />
 
     <!-- Link names -->
@@ -59,7 +60,7 @@
 
     <xacro:property name="body_offset_x" value="${props['control_point'][0]}" />
     <xacro:property name="body_origin_z" value="${ground_clearance + body_height/2}" />
-    <xacro:property name="body_reference_x" value="${${props['control_point'][0]}}" />
+    <xacro:property name="body_reference_x" value="${props['control_point'][0]}" />
 
 
     <!-- Steering Properties -->
@@ -68,6 +69,7 @@
 
     <xacro:property name="front_wheel_y_offset" value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
     <xacro:property name="rear_wheel_y_offset" value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
+    <xacro:property name="wheel_y_offset" value="${front_wheel_y_offset}" />
 
     <xacro:property name="steering_link_mass" value="1" />
     <xacro:property name="steering_link_y_size" value="${wheel_y_offset}" />
@@ -93,11 +95,11 @@
     <xacro:property name="rear_wheel_mass" value="5" />
 
     <!-- Wheel Mounting Positions -->
-    <xacro:property name="ground_clearance" value="${chassis_props['ground_clearance']}"/>
-    <xacro:property name="front_wheel_y_offset" value="${chassis_props['hub_carrier_offset']['front']}" />
-    <xacro:property name="rear_wheel_y_offset" value="${chassis_props['hub_carrier_offset']['rear']}" />
-    <xacro:property name="front_wheel_y_offset" value="${chassis_props['hub_carrier_offset']['front']}" />
-    <xacro:property name="rear_wheel_y_offset" value="${chassis_props['hub_carrier_offset']['rear']}" />
+<!--    <xacro:property name="ground_clearance" value="${chassis_props['ground_clearance']}"/>-->
+<!--    <xacro:property name="front_wheel_y_offset" value="${chassis_props['hub_carrier_offset']['front']}" />-->
+<!--    <xacro:property name="rear_wheel_y_offset" value="${chassis_props['hub_carrier_offset']['rear']}" />-->
+<!--    <xacro:property name="front_wheel_y_offset" value="${chassis_props['hub_carrier_offset']['front']}" />-->
+<!--    <xacro:property name="rear_wheel_y_offset" value="${chassis_props['hub_carrier_offset']['rear']}" />-->
 
     <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
 
