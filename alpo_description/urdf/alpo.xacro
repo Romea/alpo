@@ -3,7 +3,7 @@
 
 <robot name="alpo" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="alpo" params="model use_sim prefix">
+  <xacro:macro name="alpo" params="model mode prefix">
 
     <xacro:include filename="$(find alpo_description)/urdf/color.xacro" />
     <xacro:include filename="$(find romea_mobile_base_description)/urdf/2FWS_4WD_chassis.xacro"/>
@@ -103,6 +103,15 @@
 
     <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
 
+    <!-- Ros2 control hardware plugin -->
+    <xacro:if value="${model == '4x4'}">
+       <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD"/>
+    </xacro:if>
+
+    <xacro:if value="${model == 'slim'}">
+       <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FW2RWD"/>
+    </xacro:if>
+
 
     <xacro:chassis>
       <!-- visual chassis -->
@@ -127,7 +136,9 @@
       <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
     </xacro:chassis>
 
-     <xacro:base_control use_sim="${use_sim}"/>
+    <xacro:if value="${mode == 'simulation'}">
+       <xacro:base_control mode="${mode}"/>
+    </xacro:if>
 
   </xacro:macro>
 </robot>
