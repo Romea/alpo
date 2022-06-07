@@ -1,13 +1,19 @@
 <?xml version="1.0"?>
-
-
 <robot name="alpo" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="alpo" params="model mode prefix">
+ <xacro:macro name="alpo" params="model mode prefix">
 
     <xacro:include filename="$(find alpo_description)/urdf/color.xacro" />
-    <xacro:include filename="$(find romea_mobile_base_description)/urdf/2FWS_4WD_chassis.xacro"/>
-    <xacro:include filename="$(find romea_mobile_base_description)/ros2_control/2FWS_4WD.ros2_control.xacro"/>
+
+    <xacro:if value="${model == 'fat'}">
+       <xacro:include filename="$(find romea_mobile_base_description)/urdf/2FWS_4WD_chassis.xacro"/>
+       <xacro:include filename="$(find romea_mobile_base_description)/ros2_control/2FWS_4WD.ros2_control.xacro"/>
+    </xacro:if>
+
+    <xacro:if value="${model == 'slim'}">
+      <xacro:include filename="$(find romea_mobile_base_description)/urdf/2FWS_2RWD_chassis.xacro"/>
+      <xacro:include filename="$(find romea_mobile_base_description)/ros2_control/2FWS_2RWD.ros2_control.xacro"/>
+    </xacro:if>
 
     <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
     <xacro:property name="props" value="${load_yaml(conf)['/**']['ros__parameters']['base_info']}" />
@@ -86,9 +92,17 @@
     <xacro:property name="wheel_radius" value="${front_wheel_radius}" />
     <xacro:property name="wheel_width" value="${front_wheel_width}" />
 
-    <xacro:property name="minimal_wheel_steering_angle" value="-${props['wheels_steering_control']['command']['maximal_angle']}"/>
-    <xacro:property name="maximal_wheel_steering_angle" value="${props['wheels_steering_control']['command']['maximal_angle']}"/>
-    <xacro:property name="maximal_wheel_speed" value="${props['wheels_speed_control']['command']['maximal_speed']}"/>
+    <xacro:property name="minimal_wheel_steering_angle" value="-${props['front_wheels_steering_control']['command']['maximal_angle']}"/>
+    <xacro:property name="maximal_wheel_steering_angle" value="${props['front_wheels_steering_control']['command']['maximal_angle']}"/>
+
+    <xacro:if value="${model == 'fat'}">
+       <xacro:property name="maximal_wheel_speed" value="${props['wheels_speed_control']['command']['maximal_speed']}"/>
+    </xacro:if>
+
+    <xacro:if value="${model == 'slim'}">
+       <xacro:property name="maximal_wheel_speed" value="${props['rear_wheels_speed_control']['command']['maximal_speed']}"/>
+    </xacro:if>
+
 
     <xacro:property name="wheel_mass" value="5" />
     <xacro:property name="front_wheel_mass" value="5" />
@@ -104,7 +118,7 @@
     <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
 
     <!-- Ros2 control hardware plugin -->
-    <xacro:if value="${model == '4x4'}">
+    <xacro:if value="${model == 'fat'}">
        <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD"/>
     </xacro:if>
 
@@ -141,4 +155,5 @@
     </xacro:if>
 
   </xacro:macro>
+
 </robot>

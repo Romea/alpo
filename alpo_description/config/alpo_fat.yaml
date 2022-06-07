@@ -2,7 +2,7 @@
   ros__parameters:
     base_info:
       geometry:
-        axles_distance: 2
+        axles_distance: 2.0
         front_axle:
           wheels_distance: 1.5
           wheels:
@@ -22,7 +22,7 @@
           center: [-0.5, 0., 1.2]
         ground_clearance: 0.15
 
-      wheels_steering_control:
+      front_wheels_steering_control:
          command:
            maximal_angle: 0.73
            maximal_angular_speed: 0.2433
@@ -43,7 +43,7 @@
         center: [-0.1, 0.0, 0.2]
         z_moment: 0.
 
-      control_point : [-1, 0.0, 0.0]
+      control_point: [-1.0, 0.0, 0.0]
 
       joints:
        base_footprint_joint_name: base_footprint_joint

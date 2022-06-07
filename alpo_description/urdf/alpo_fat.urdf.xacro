@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
-<robot name="alpo_4x4" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="alpo_fat" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="mode" default="simulation" />
   <xacro:arg name="controller_conf_yaml_file" default=""/>
 
   <xacro:include filename="$(find alpo_description)/urdf/alpo.xacro" />
-  <xacro:alpo model="4x4" mode="$(arg mode)" prefix="$(arg prefix)"/>
+  <xacro:alpo model="fat" mode="$(arg mode)" prefix="$(arg prefix)"/>
 
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
