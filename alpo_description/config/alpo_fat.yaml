@@ -19,7 +19,7 @@
           length: 2.6
           width: 1.68
           height: 1.5
-          center: [-0.5, 0., 1.2]
+          center: [0., 0., 1.2]
         ground_clearance: 0.15
 
       front_wheels_steering_control:
