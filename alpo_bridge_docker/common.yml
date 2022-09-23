@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  common:
+    build: .
+    network_mode: "host"
+    environment:
+      - ROS_DOMAIN_ID
+      # - ROS_IP=192.168.100.2
+      # - ROS_MASTER_URI=http://192.168.100.1:11311

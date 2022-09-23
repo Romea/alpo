@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  bridge:
+    command: bash -c "ros2 run alpo_bridge alpo_bridge"
+    extends:
+      file: common.yml
+      service: common
