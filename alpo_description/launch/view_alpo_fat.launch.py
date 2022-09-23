@@ -6,7 +6,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 def generate_launch_description():
 
     romea_mobile_base_description_package_prefix = get_package_share_directory('romea_mobile_base_description')
-    urdf_file = get_package_share_directory("alpo_description") + "/urdf/alpo_4x4.urdf.xacro"
+    urdf_file = get_package_share_directory("alpo_description") + "/urdf/alpo_fat.urdf.xacro"
 
     return LaunchDescription([
         IncludeLaunchDescription(

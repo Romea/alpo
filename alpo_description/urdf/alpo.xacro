@@ -81,7 +81,8 @@
     <xacro:property name="steering_link_xz" value="0.1" />
 
     <!-- Wheel Properties -->
-
+    <xacro:property name="front_hub_carrier_offset" value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
+    <xacro:property name="rear_hub_carrier_offset" value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
     <xacro:property name="front_wheel_radius" value="${props['geometry']['front_axle']['wheels']['radius']}" />
     <xacro:property name="rear_wheel_radius" value="${props['geometry']['rear_axle']['wheels']['radius']}" />
     <xacro:property name="front_wheel_width" value="${props['geometry']['front_axle']['wheels']['width']}" />
@@ -108,10 +109,12 @@
     <!-- Ros2 control hardware plugin -->
     <xacro:if value="${model == 'fat'}">
        <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD"/>
+       <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS4WD"/>
     </xacro:if>
 
     <xacro:if value="${model == 'slim'}">
        <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FW2RWD"/>
+       <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD"/>
     </xacro:if>
 
    <!-- Mesh scale -->
@@ -148,7 +151,7 @@
       <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
     </xacro:chassis>
 
-    <xacro:if value="${mode == 'simulation'}">
+    <xacro:if value="${mode == 'simulation' or mode == 'live'}">
        <xacro:base_control mode="${mode}"/>
     </xacro:if>
 
