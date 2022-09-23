@@ -82,15 +82,9 @@ def launch_setup(context, *args, **kwargs):
         + ".urdf.xacro"
     )
 
+
+    command_message_type = "romea_mobile_base_msgs/OneAxleSteeringCommand"
     command_message_priority = 100
-
-    if mode == "simulation" :
-       command_message_type = "romea_mobile_base_msgs/OneAxleSteeringCommand"
-       command_mux_output = "cmd_one_axle_steering"
-
-    if mode == "live" :
-       command_message_type = "ackermann_msgs/AckermannDrive"
-       command_mux_output = "alpo_driver ... ?? "
 
 
     gazebo = IncludeLaunchDescription(
@@ -143,6 +137,22 @@ def launch_setup(context, *args, **kwargs):
         ],
         output="screen",
     )
+
+    alpo_bridge = Node(
+        condition=LaunchConfigurationEquals("mode", "live"),
+        package="alpo_bridge",
+        executable="alpo_bridge",
+        output="screen",
+    )
+
+    controller_manager = Node(
+        condition=LaunchConfigurationEquals("mode", "live"),
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[robot_description, controller_manager_yaml_file],
+         output="screen",
+    )
+
 
     controller = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -203,20 +213,21 @@ def launch_setup(context, *args, **kwargs):
         executable="cmd_mux_node",
         name="cmd_mux",
         parameters=[{"topics_type": command_message_type}],
-        remappings=[("~/out", command_mux_output)],
+        remappings=[("~/out", "cmd_one_axle_steering")],
         output="screen",
     )
 
 
     return [
         gazebo,
+        alpo_bridge,
         GroupAction(
             actions=[
                 SetParameter(name="use_sim_time", value=use_sim_time),
                 PushRosNamespace(robot_namespace),
                 robot_state_publisher,
                 spawn_entity,
-#                controller_manager,
+                controller_manager,
                 controller,
                 joy,
                 teleop,
