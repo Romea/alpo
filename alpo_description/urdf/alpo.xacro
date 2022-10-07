@@ -113,17 +113,17 @@
     </xacro:if>
 
     <xacro:if value="${model == 'slim'}">
-       <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FW2RWD"/>
+       <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD"/>
        <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD"/>
     </xacro:if>
 
    <!-- Mesh scale -->
     <xacro:if value="${model == 'fat' and mesh == True}">
-       <xacro:property name="mesh_scale_y" value="1.0"/>
+       <xacro:property name="mesh_scale_x" value="1.0"/>
     </xacro:if>
 
     <xacro:if value="${model == 'slim' and mesh == True}">
-       <xacro:property name="mesh_scale_y" value="0.7"/>
+       <xacro:property name="mesh_scale_x" value="0.7"/>
     </xacro:if>
 
 
@@ -137,10 +137,9 @@
           </geometry>
         </xacro:if>
         <xacro:if value="${mesh == True}">
-
           <origin xyz="0 0 0" rpy="0 0 ${-pi/2}" />
           <geometry>
-            <mesh filename="package://alpo_description/meshes/chassis.dae" scale="1.0 ${mesh_scale_y} 1.0" />
+            <mesh filename="package://alpo_description/meshes/chassis.dae" scale="${mesh_scale_x} 1.0 1.0" />
           </geometry>
         </xacro:if>
         <xacro:beige/>
