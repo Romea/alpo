@@ -13,7 +13,9 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>alpo_bringup</exec_depend>
+  <exec_depend>alpo_bridge</exec_depend>
   <exec_depend>alpo_description</exec_depend>
+  <exec_depend>alpo_hardware</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
