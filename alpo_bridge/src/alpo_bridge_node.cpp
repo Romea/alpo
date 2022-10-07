@@ -47,19 +47,19 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   auto ros2_node_ptr = rclcpp::Node::make_shared("ros_bridge");
 
-  // Find local end ip
-  //  std::string ip  = find_local_end_ip();
-  //  if(ip.empty())
-  //  {
-  //    RCLCPP_FATAL(ros2_node_ptr->get_logger(),
-  //                 "No ethernet connection with alpo robot, bridge failed");
-  //    return 1;
-  //  }
+  //Find local end ip
+  std::string ip  = find_local_end_ip();
+  if(ip.empty())
+  {
+    RCLCPP_FATAL(ros2_node_ptr->get_logger(),
+                 "No ethernet connection with alpo robot!, Alpo bridge failed");
+    return 1;
+  }
 
   // ROS 1 node
   ros::M_string remappings;
-  //  remappings["__ip"]= ip;
-  //  remappings["__master"]= master;
+  remappings["__ip"]= ip;
+  remappings["__master"]= master;
   ros::init(remappings, "alpo_bridge");
   auto ros1_node_ptr = std::make_shared<ros::NodeHandle>();
 

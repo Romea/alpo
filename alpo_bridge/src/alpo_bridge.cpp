@@ -2,13 +2,8 @@
 
 const std::string alpo_joy_topic = "/joy";
 const std::string alpo_odom_topic = "/alpo_driver/ackermann_controller/odom";
-const std::string alpo_cmd_steer_topic = "/alpo_driver/ackermann_controller/cmd_steer";
+const std::string alpo_cmd_steer_topic = "/auto/cmd_steer";
 const std::string alpo_joint_states_topic = "/alpo_driver/joint_states";
-
-//const std::string bridge_joy_topic = "/alpo_bridge/joy";
-//const std::string bridge_odom_topic = "/alpo_bridge/vehicle_controller/odom";
-//const std::string bridge_cmd_steer_topic = "/alpo_bridge/vehicle_controller/cmd_steer";
-//const std::string bridge_joint_states_topic = "/alpo_bridge/vehicle_controller/joint_states";
 
 const std::string bridge_joy_topic = "/alpo_bridge/joy";
 const std::string bridge_odom_topic = "/alpo_bridge/vehicle_controller/odom";
@@ -108,7 +103,7 @@ void AlpoBridge::start()
 void AlpoBridge::init_ros1_publisher_()
 {
   ros1_cmd_steer_pub_ =  ros1_node_ptr_->
-      advertise<Ros1AckermannMsg>("/auto/cmd_steer", 1);
+      advertise<Ros1AckermannMsg>(alpo_cmd_steer_topic, 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,6 +137,6 @@ void AlpoBridge::init_ros2_subcription_()
     auto callback = std::bind(&AlpoBridge::ros2_cmd_steer_callback_,
                               this,std::placeholders::_1);
 
-    ros2_cmd_steer_sub_ = ros2_node_ptr_->create_subscription<Ros2OdomMsg>(
+    ros2_cmd_steer_sub_ = ros2_node_ptr_->create_subscription<Ros2AckermannMsg>(
           bridge_cmd_steer_topic, cmd_qos, callback,options);
 }
