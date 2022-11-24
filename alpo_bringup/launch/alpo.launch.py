@@ -36,7 +36,6 @@ def launch_setup(context, *args, **kwargs):
     robot_model = LaunchConfiguration("robot_model").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
     joystick_type = LaunchConfiguration("joystick_type").perform(context)
-    launch_gazebo = LaunchConfiguration("launch_gazebo").perform(context)
     urdf_description = LaunchConfiguration("urdf_description").perform(context)
 
     if robot_namespace:
@@ -48,8 +47,6 @@ def launch_setup(context, *args, **kwargs):
         controller_manager_name = "/controller_manager"
         joints_prefix = ""
 
-    launch_joy = (mode != "replay") and (joystick_type != "hj60ss")
-    launch_gazebo = (mode == "simulation") and launch_gazebo
     use_sim_time = (mode == "simulation") or (mode == "replay")
 
     base_description_yaml_file = (
@@ -77,18 +74,6 @@ def launch_setup(context, *args, **kwargs):
 
     command_message_type = "romea_mobile_base_msgs/OneAxleSteeringCommand"
     command_message_priority = 100
-
-    gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [FindPackageShare("gazebo_ros"), "launch", "gazebo.launch.py"]
-                )
-            ]
-        ),
-        launch_arguments={"verbose": "false"}.items(),
-        condition=IfCondition(str(launch_gazebo)),
-    )
 
     robot_description = {"robot_description": urdf_description}
 
@@ -151,14 +136,6 @@ def launch_setup(context, *args, **kwargs):
         condition=LaunchConfigurationNotEquals("mode", "replay"),
     )
 
-    joy = Node(
-        condition=IfCondition(str(launch_joy)),
-        package="joy",
-        executable="joy_node",
-        name="joy",
-        output="log",
-    )
-
     teleop = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -191,7 +168,6 @@ def launch_setup(context, *args, **kwargs):
     )
 
     return [
-        gazebo,
         alpo_bridge,
         GroupAction(
             actions=[
@@ -201,7 +177,6 @@ def launch_setup(context, *args, **kwargs):
                 spawn_entity,
                 controller_manager,
                 controller,
-                joy,
                 teleop,
                 cmd_mux,
             ]
@@ -220,8 +195,6 @@ def generate_launch_description():
     declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
 
     declared_arguments.append(DeclareLaunchArgument("joystick_type"))
-
-    declared_arguments.append(DeclareLaunchArgument("launch_gazebo"))
 
     declared_arguments.append(DeclareLaunchArgument("urdf_description"))
 
