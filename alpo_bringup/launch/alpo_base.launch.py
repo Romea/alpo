@@ -11,20 +11,10 @@ from launch.conditions import (
     LaunchConfigurationEquals,
     LaunchConfigurationNotEquals,
 )
-from launch.substitutions import (
-    Command,
-    FindExecutable,
-    PathJoinSubstitution,
-    LaunchConfiguration,
-    TextSubstitution,
-    PythonExpression,
-)
+from launch.substitutions import Command, PathJoinSubstitution, LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-
 from launch_ros.actions import Node, SetParameter, PushRosNamespace
-
-from launch_ros.substitutions import FindPackageShare
-
+from launch_ros.substitutions import FindPackageShare, ExecutableInPackage
 from ament_index_python.packages import get_package_share_directory
 
 import yaml
@@ -35,7 +25,6 @@ def launch_setup(context, *args, **kwargs):
     mode = LaunchConfiguration("mode").perform(context)
     robot_model = LaunchConfiguration("robot_model").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-    joystick_type = LaunchConfiguration("joystick_type").perform(context)
     urdf_description = LaunchConfiguration("urdf_description").perform(context)
 
     if robot_namespace:
@@ -56,13 +45,6 @@ def launch_setup(context, *args, **kwargs):
         + ".yaml"
     )
 
-    joystick_remapping_yaml_file = (
-        get_package_share_directory("romea_teleop")
-        + "/config/"
-        + joystick_type
-        + "_one_axle_steering_remappings.yaml"
-    )
-
     controller_manager_yaml_file = (
         get_package_share_directory("alpo_bringup") + "/config/controller_manager.yaml"
     )
@@ -71,9 +53,6 @@ def launch_setup(context, *args, **kwargs):
         get_package_share_directory("alpo_bringup")
         + "/config/mobile_base_controller.yaml"
     )
-
-    command_message_type = "romea_mobile_base_msgs/OneAxleSteeringCommand"
-    command_message_priority = 100
 
     robot_description = {"robot_description": urdf_description}
 
@@ -136,33 +115,12 @@ def launch_setup(context, *args, **kwargs):
         condition=LaunchConfigurationNotEquals("mode", "replay"),
     )
 
-    teleop = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("romea_teleop"),
-                        "launch",
-                        "two_wheel_steering_teleop.launch.py",
-                    ]
-                )
-            ]
-        ),
-        launch_arguments={
-            "joystick_type": joystick_type,
-            "output_message_type": command_message_type,
-            "output_message_priority": str(command_message_priority),
-            "base_description_yaml_filename": base_description_yaml_file,
-        }.items(),
-        condition=LaunchConfigurationNotEquals("joystick_type", "hj60ss"),
-    )
-
     cmd_mux = Node(
         condition=LaunchConfigurationNotEquals("mode", "replay"),
         package="romea_cmd_mux",
         executable="cmd_mux_node",
         name="cmd_mux",
-        parameters=[{"topics_type": command_message_type}],
+        parameters=[{"topics_type": "romea_mobile_base_msgs/OneAxleSteeringCommand"}],
         remappings=[("~/out", "controller/cmd_one_axle_steering")],
         output="screen",
     )
@@ -177,7 +135,6 @@ def launch_setup(context, *args, **kwargs):
                 spawn_entity,
                 controller_manager,
                 controller,
-                teleop,
                 cmd_mux,
             ]
         ),
@@ -192,12 +149,25 @@ def generate_launch_description():
 
     declared_arguments.append(DeclareLaunchArgument("robot_model"))
 
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
+    declared_arguments.append(
+        DeclareLaunchArgument("robot_namespace", default_value="alpo")
+    )
 
-    declared_arguments.append(DeclareLaunchArgument("joystick_type"))
+    urdf_description = Command(
+        [
+            ExecutableInPackage("urdf_description.py", "alpo_bringup"),
+            " robot_namespace:",
+            LaunchConfiguration("robot_namespace"),
+            " robot_model:",
+            LaunchConfiguration("robot_model"),
+            " mode:",
+            LaunchConfiguration("mode"),
+        ]
+    )
 
-    declared_arguments.append(DeclareLaunchArgument("urdf_description"))
-
+    declared_arguments.append(
+        DeclareLaunchArgument("urdf_description", default_value=urdf_description)
+    )
     return LaunchDescription(
         declared_arguments + [OpaqueFunction(function=launch_setup)]
     )
