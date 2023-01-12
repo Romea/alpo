@@ -1,8 +1,10 @@
-#!/usr/bin/env python3
+# Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
+# Add license
 
 import xacro
 
 from ament_index_python.packages import get_package_share_directory
+
 
 def urdf(prefix, mode, robot_model, controller_conf_yaml_file):
 

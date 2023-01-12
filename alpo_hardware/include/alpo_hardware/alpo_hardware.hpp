@@ -1,44 +1,44 @@
-#ifndef ALPO_HARDWARE_HPP_
-#define ALPO_HARDWARE_HPP_
+// Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
+// Add license
 
-//romea
-#include "romea_mobile_base_hardware/hardware_system_interface.hpp"
+#ifndef ALPO_HARDWARE__ALPO_HARDWARE_HPP_
+#define ALPO_HARDWARE__ALPO_HARDWARE_HPP_
 
-//ros2
+// romea
+#include <romea_mobile_base_hardware/hardware_system_interface.hpp>
+
+// ros2
 #include <rclcpp/macros.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <ackermann_msgs/msg/ackermann_drive.hpp>
 
-//std
+// std
 #include <atomic>
 #include <fstream>
 
 namespace romea
 {
 
-template <typename HardwareInterface>
+template<typename HardwareInterface>
 class AlpoHardware : public HardwareSystemInterface<HardwareInterface>
-{  
-
+{
 public:
-
   RCLCPP_SHARED_PTR_DEFINITIONS(AlpoHardware);
 
   AlpoHardware();
 
-  virtual hardware_interface::return_type read() override;
+  hardware_interface::return_type read() override;
 
-  virtual hardware_interface::return_type write() override;
+  hardware_interface::return_type write() override;
 
 private:
+  hardware_interface::return_type connect_() override;
 
-  virtual hardware_interface::return_type connect_() override;
-
-  virtual hardware_interface::return_type disconnect_() override;
+  hardware_interface::return_type disconnect_() override;
 
   hardware_interface::return_type load_info_(
-      const hardware_interface::HardwareInfo & hardware_info) override ;
+    const hardware_interface::HardwareInfo & hardware_info) override;
 
   void joint_states_callback_(const sensor_msgs::msg::JointState::ConstSharedPtr msg);
 
@@ -58,7 +58,6 @@ private:
 #endif
 
 private:
-
   float front_wheel_radius_;
   float rear_wheel_radius_;
   double wheelbase_;
@@ -85,12 +84,11 @@ private:
 #ifndef NDEBUG
   std::fstream debug_file_;
 #endif
-
 };
 
 using AlpoHardware2FWS4WD = AlpoHardware<HardwareInterface2FWS4WD>;
 using AlpoHardware2FWS2RWD = AlpoHardware<HardwareInterface2FWS2RWD>;
 
-}
+}  // namespace romea
 
-#endif
+#endif  // ALPO_HARDWARE__ALPO_HARDWARE_HPP_

@@ -1,45 +1,63 @@
-#include "alpo_hardware/alpo_hardware.hpp"
+// Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
+// Add license
 
+// romea
 #include <romea_common_utils/qos.hpp>
 #include <romea_mobile_base_hardware/hardware_info.hpp>
 #include <romea_core_mobile_base/kinematic/wheel_steering/TwoWheelSteeringKinematic.hpp>
 
 
-namespace  {
+// std
+#include <limits>
+#include <string>
+#include <vector>
 
-size_t joint_id(const std::vector<std::string> joint_state_names,
-                const std::string & joint_name)
+// local
+#include "alpo_hardware/alpo_hardware.hpp"
+
+
+namespace
 {
-  auto it = std::find(joint_state_names.cbegin(),
-                      joint_state_names.cend(),
-                      joint_name);
 
-  if(it==joint_state_names.end())
-  {
-    throw std::runtime_error("Cannot find info of "+ joint_name + " in joint_states msg");
+size_t joint_id(
+  const std::vector<std::string> joint_state_names,
+  const std::string & joint_name)
+{
+  auto it = std::find(
+    joint_state_names.cbegin(),
+    joint_state_names.cend(),
+    joint_name);
+
+  if (it == joint_state_names.end()) {
+    throw std::runtime_error("Cannot find info of " + joint_name + " in joint_states msg");
   }
 
-  return std::distance(joint_state_names.cbegin(),it);
+  return std::distance(joint_state_names.cbegin(), it);
 }
 
-const double & position(const sensor_msgs::msg::JointState & joint_states,const std::string & joint_name)
+const double & position(
+  const sensor_msgs::msg::JointState & joint_states,
+  const std::string & joint_name)
 {
-  return joint_states.position[joint_id(joint_states.name,joint_name)];
+  return joint_states.position[joint_id(joint_states.name, joint_name)];
 }
 
-const double & velocity(const sensor_msgs::msg::JointState & joint_states,const std::string & joint_name)
+const double & velocity(
+  const sensor_msgs::msg::JointState & joint_states,
+  const std::string & joint_name)
 {
-  return joint_states.velocity[joint_id(joint_states.name,joint_name)];
+  return joint_states.velocity[joint_id(joint_states.name, joint_name)];
 }
 
-}
+}  // namespace
 
-namespace romea {
+namespace romea
+{
 
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
-AlpoHardware<HardwareInterface>::AlpoHardware():
-  HardwareSystemInterface<HardwareInterface>(),
+AlpoHardware<HardwareInterface>::AlpoHardware()
+: HardwareSystemInterface<HardwareInterface>(),
   front_wheel_radius_(0),
   rear_wheel_radius_(0),
 //  front_left_wheel_steering_angle_measure_(0),
@@ -68,12 +86,14 @@ AlpoHardware<HardwareInterface>::AlpoHardware():
 
 
   node_ = rclcpp::Node::make_shared("mobile_base_controller_bridge");
-  auto callback = std::bind(&AlpoHardware<HardwareInterface>::joint_states_callback_,this,std::placeholders::_1);
-  cmd_steer_pub_ = node_->create_publisher<ackermann_msgs::msg::AckermannDrive>("/alpo_bridge/vehicle_controller/cmd_steer",sensor_data_qos());
-  joint_states_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>("/alpo_bridge/vehicle_controller/joint_states",best_effort(1),callback);
-
+  auto callback = std::bind(
+    &AlpoHardware<HardwareInterface>::joint_states_callback_, this,
+    std::placeholders::_1);
+  cmd_steer_pub_ = node_->create_publisher<ackermann_msgs::msg::AckermannDrive>(
+    "/alpo_bridge/vehicle_controller/cmd_steer", sensor_data_qos());
+  joint_states_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
+    "/alpo_bridge/vehicle_controller/joint_states", best_effort(1), callback);
 }
-
 
 
 //-----------------------------------------------------------------------------
@@ -99,21 +119,18 @@ hardware_interface::return_type AlpoHardware<HardwareInterface>::disconnect_()
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
 hardware_interface::return_type AlpoHardware<HardwareInterface>::load_info_(
-    const hardware_interface::HardwareInfo & hardware_info)
+  const hardware_interface::HardwareInfo & hardware_info)
 {
-
-  RCLCPP_ERROR_STREAM(rclcpp::get_logger("AlpoHardware"),"load_info");
+  RCLCPP_ERROR_STREAM(rclcpp::get_logger("AlpoHardware"), "load_info");
 
   try {
-    wheelbase_ = get_parameter<double>(hardware_info,"wheelbase");
-    front_track_= get_parameter<double>(hardware_info,"front_track");
-    front_wheel_radius_=get_parameter<float>(hardware_info,"front_wheel_radius");
-    rear_wheel_radius_=get_parameter<float>(hardware_info,"rear_wheel_radius");
+    wheelbase_ = get_parameter<double>(hardware_info, "wheelbase");
+    front_track_ = get_parameter<double>(hardware_info, "front_track");
+    front_wheel_radius_ = get_parameter<float>(hardware_info, "front_wheel_radius");
+    rear_wheel_radius_ = get_parameter<float>(hardware_info, "rear_wheel_radius");
     return hardware_interface::return_type::OK;
-  }
-  catch (std::runtime_error &e)
-  {
-    RCLCPP_FATAL_STREAM(rclcpp::get_logger("AlpoHardware"),e.what());
+  } catch (std::runtime_error & e) {
+    RCLCPP_FATAL_STREAM(rclcpp::get_logger("AlpoHardware"), e.what());
     return hardware_interface::return_type::ERROR;
   }
 }
@@ -122,17 +139,17 @@ hardware_interface::return_type AlpoHardware<HardwareInterface>::load_info_(
 template<typename HardwareInterface>
 void AlpoHardware<HardwareInterface>::send_command_()
 {
-
   ackermann_msgs::msg::AckermannDrive cmd;
 
-  cmd.speed = 0.5*rear_wheel_radius_*
-      (rear_left_wheel_angular_speed_command_+
-       rear_right_wheel_angular_speed_command_);
+  cmd.speed = 0.5 * rear_wheel_radius_ *
+    (rear_left_wheel_angular_speed_command_ +
+    rear_right_wheel_angular_speed_command_);
 
   cmd.steering_angle = romea::TwoWheelSteeringKinematic::
-      computeSteeringAngle(front_left_wheel_steering_angle_command_,
-                           front_right_wheel_steering_angle_command_,
-                           wheelbase_,front_track_);
+    computeSteeringAngle(
+    front_left_wheel_steering_angle_command_,
+    front_right_wheel_steering_angle_command_,
+    wheelbase_, front_track_);
 
   cmd_steer_pub_->publish(cmd);
 }
@@ -150,17 +167,15 @@ template<typename HardwareInteface>
 hardware_interface::return_type AlpoHardware<HardwareInteface>::read()
 {
 //    RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Read data from robot");
-    rclcpp::spin_some(node_);
+  rclcpp::spin_some(node_);
 
-    try {
+  try {
     set_hardware_state_();
 #ifndef NDEBUG
     write_log_data_();
 #endif
     return hardware_interface::return_type::OK;
-  }
-  catch (std::runtime_error & e)
-  {
+  } catch (std::runtime_error & e) {
     RCLCPP_FATAL_STREAM(rclcpp::get_logger("AlpoHardware"), e.what());
     return hardware_interface::return_type::ERROR;
   }
@@ -176,39 +191,40 @@ hardware_interface::return_type AlpoHardware<HardwareInteface>::write()
   send_command_();
 
   return hardware_interface::return_type::OK;
-
 }
 
 //-----------------------------------------------------------------------------
 template<>
-void AlpoHardware<HardwareInterface2FWS4WD>::joint_states_callback_(const sensor_msgs::msg::JointState::ConstSharedPtr msg)
+void AlpoHardware<HardwareInterface2FWS4WD>::joint_states_callback_(
+  const sensor_msgs::msg::JointState::ConstSharedPtr msg)
 {
-  front_left_wheel_steering_angle_measure_=
-      position(*msg,"front_left_wheel_steering_joint");
-  front_right_wheel_steering_angle_measure_=
-        position(*msg,"front_right_wheel_steering_joint");
-  front_left_wheel_angular_speed_measure_=
-      velocity(*msg,"front_left_wheel_spinning_joint");
-  front_right_wheel_angular_speed_measure_=
-      velocity(*msg,"front_right_wheel_spinning_joint");
-  rear_left_wheel_angular_speed_measure_=
-      velocity(*msg,"rear_left_wheel_spinning_joint");
-  rear_right_wheel_angular_speed_measure_=
-      velocity(*msg,"rear_right_wheel_spinning_joint");
+  front_left_wheel_steering_angle_measure_ =
+    position(*msg, "front_left_wheel_steering_joint");
+  front_right_wheel_steering_angle_measure_ =
+    position(*msg, "front_right_wheel_steering_joint");
+  front_left_wheel_angular_speed_measure_ =
+    velocity(*msg, "front_left_wheel_spinning_joint");
+  front_right_wheel_angular_speed_measure_ =
+    velocity(*msg, "front_right_wheel_spinning_joint");
+  rear_left_wheel_angular_speed_measure_ =
+    velocity(*msg, "rear_left_wheel_spinning_joint");
+  rear_right_wheel_angular_speed_measure_ =
+    velocity(*msg, "rear_right_wheel_spinning_joint");
 }
 
 //-----------------------------------------------------------------------------
 template<>
-void AlpoHardware<HardwareInterface2FWS2RWD>::joint_states_callback_(const sensor_msgs::msg::JointState::ConstSharedPtr msg)
+void AlpoHardware<HardwareInterface2FWS2RWD>::joint_states_callback_(
+  const sensor_msgs::msg::JointState::ConstSharedPtr msg)
 {
-  front_left_wheel_steering_angle_measure_=
-      position(*msg,"front_left_wheel_steering_joint");
-  front_right_wheel_steering_angle_measure_=
-      position(*msg,"front_right_wheel_steering_joint");
-  rear_left_wheel_angular_speed_measure_=
-      velocity(*msg,"rear_left_wheel_spinning_joint");
-  rear_right_wheel_angular_speed_measure_=
-      velocity(*msg,"rear_right_wheel_spinning_joint");
+  front_left_wheel_steering_angle_measure_ =
+    position(*msg, "front_left_wheel_steering_joint");
+  front_right_wheel_steering_angle_measure_ =
+    position(*msg, "front_right_wheel_steering_joint");
+  rear_left_wheel_angular_speed_measure_ =
+    velocity(*msg, "rear_left_wheel_spinning_joint");
+  rear_right_wheel_angular_speed_measure_ =
+    velocity(*msg, "rear_right_wheel_spinning_joint");
 }
 
 //-----------------------------------------------------------------------------
@@ -267,22 +283,22 @@ void AlpoHardware<HardwareInterface2FWS4WD>::get_hardware_command_()
 template<typename HardwareInterface>
 void AlpoHardware<HardwareInterface>::open_log_file_()
 {
-  debug_file_.open(std::string("alpo.dat").c_str(),
-                   std::fstream::in|std::fstream::out|std::fstream::trunc);
+  debug_file_.open(
+    std::string("alpo.dat").c_str(),
+    std::fstream::in | std::fstream::out | std::fstream::trunc);
 }
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
 void AlpoHardware<HardwareInterface>::write_log_header_()
 {
-  if(debug_file_.is_open())
-  {
-    debug_file_ <<"# time, ";
-    debug_file_ <<" FLS, "<<" FRS, ";
-    debug_file_ <<" RLS, "<<" RRS, ";
-    debug_file_ <<" FLA, "<<" FRA, ";
-    debug_file_ <<" FLS_cmd, "<<" FRS_cmd, ";
-    debug_file_ <<" RLS_cmd, "<<" RRS_cmd, ";
-    debug_file_ <<" FLA_cmd, "<<" FRA_cmd, "<<"\n";
+  if (debug_file_.is_open()) {
+    debug_file_ << "# time, ";
+    debug_file_ << " FLS, " << " FRS, ";
+    debug_file_ << " RLS, " << " RRS, ";
+    debug_file_ << " FLA, " << " FRA, ";
+    debug_file_ << " FLS_cmd, " << " FRS_cmd, ";
+    debug_file_ << " RLS_cmd, " << " RRS_cmd, ";
+    debug_file_ << " FLA_cmd, " << " FRA_cmd, " << "\n";
   }
 }
 
@@ -290,25 +306,24 @@ void AlpoHardware<HardwareInterface>::write_log_header_()
 template<typename HardwareInterface>
 void AlpoHardware<HardwareInterface>::write_log_data_()
 {
-  if(debug_file_.is_open())
-  {
+  if (debug_file_.is_open()) {
     auto now = std::chrono::system_clock::now();
     auto now_ns = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
 
     debug_file_ << std::setprecision(10);
-    debug_file_ << now_ns.time_since_epoch().count()<<" ";
-    debug_file_ <<front_left_wheel_angular_speed_measure_*front_wheel_radius_<<" ";
-    debug_file_ << front_right_wheel_angular_speed_measure_*front_wheel_radius_<<" ";
-    debug_file_ <<rear_left_wheel_angular_speed_measure_*rear_wheel_radius_<<" ";
-    debug_file_ << rear_right_wheel_angular_speed_measure_*rear_wheel_radius_<<" ";
-    debug_file_ <<front_left_wheel_steering_angle_measure_<<" ";
-    debug_file_ << front_right_wheel_steering_angle_measure_<<" ";
-    debug_file_ <<front_left_wheel_angular_speed_command_*front_wheel_radius_<<" ";
-    debug_file_ << front_right_wheel_angular_speed_command_*front_wheel_radius_<<" ";
-    debug_file_ <<rear_left_wheel_angular_speed_command_*rear_wheel_radius_<<" ";
-    debug_file_ << rear_right_wheel_angular_speed_command_*rear_wheel_radius_<<" ";
-    debug_file_ <<front_left_wheel_steering_angle_command_<<" ";
-    debug_file_ << front_right_wheel_steering_angle_command_<<" ";
+    debug_file_ << now_ns.time_since_epoch().count() << " ";
+    debug_file_ << front_left_wheel_angular_speed_measure_ * front_wheel_radius_ << " ";
+    debug_file_ << front_right_wheel_angular_speed_measure_ * front_wheel_radius_ << " ";
+    debug_file_ << rear_left_wheel_angular_speed_measure_ * rear_wheel_radius_ << " ";
+    debug_file_ << rear_right_wheel_angular_speed_measure_ * rear_wheel_radius_ << " ";
+    debug_file_ << front_left_wheel_steering_angle_measure_ << " ";
+    debug_file_ << front_right_wheel_steering_angle_measure_ << " ";
+    debug_file_ << front_left_wheel_angular_speed_command_ * front_wheel_radius_ << " ";
+    debug_file_ << front_right_wheel_angular_speed_command_ * front_wheel_radius_ << " ";
+    debug_file_ << rear_left_wheel_angular_speed_command_ * rear_wheel_radius_ << " ";
+    debug_file_ << rear_right_wheel_angular_speed_command_ * rear_wheel_radius_ << " ";
+    debug_file_ << front_left_wheel_steering_angle_command_ << " ";
+    debug_file_ << front_right_wheel_steering_angle_command_ << " ";
   }
 }
 #endif
@@ -316,7 +331,7 @@ void AlpoHardware<HardwareInterface>::write_log_data_()
 template class AlpoHardware<HardwareInterface2FWS4WD>;
 template class AlpoHardware<HardwareInterface2FWS2RWD>;
 
-}
+}  // namespace romea
 
 
 #include "pluginlib/class_list_macros.hpp"

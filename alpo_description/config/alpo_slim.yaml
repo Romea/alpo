@@ -1,4 +1,5 @@
-kinematic: two_wheel_steering
+# kinematic: two_wheel_steering
+type: 2FWS2RWD
 geometry:
   axles_distance: 2.0
   front_axle:
