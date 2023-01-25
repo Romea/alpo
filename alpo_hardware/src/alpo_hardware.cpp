@@ -1,16 +1,15 @@
 // Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
 // Add license
 
-// romea
-#include <romea_common_utils/qos.hpp>
-#include <romea_mobile_base_hardware/hardware_info.hpp>
-#include <romea_core_mobile_base/kinematic/wheel_steering/TwoWheelSteeringKinematic.hpp>
-
-
 // std
 #include <limits>
 #include <string>
 #include <vector>
+
+// romea
+#include "romea_common_utils/qos.hpp"
+#include "romea_mobile_base_hardware/hardware_info.hpp"
+#include "romea_core_mobile_base/kinematic/wheel_steering/TwoWheelSteeringKinematic.hpp"
 
 // local
 #include "alpo_hardware/alpo_hardware.hpp"
