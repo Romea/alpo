@@ -9,6 +9,7 @@
 #include <fstream>
 
 // romea
+#include "romea_common_utils/ros_versions.hpp"
 #include "romea_mobile_base_hardware/hardware_system_interface.hpp"
 
 // ros2
