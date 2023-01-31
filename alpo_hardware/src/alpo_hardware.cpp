@@ -167,8 +167,8 @@ template<typename HardwareInteface>
 hardware_interface::return_type AlpoHardware<HardwareInteface>::read()
 #else
 hardware_interface::return_type AlpoHardware<HardwareInteface>::read(
-  const rclcpp::Time & time,
-  const rclcpp::Duration & period)
+  const rclcpp::Time & /*time*/,
+  const rclcpp::Duration & /*period*/)
 #endif
 {
 //    RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Read data from robot");
@@ -193,8 +193,8 @@ template<typename HardwareInteface>
 hardware_interface::return_type AlpoHardware<HardwareInteface>::write()
 # else
 hardware_interface::return_type AlpoHardware<HardwareInteface>::write(
-  const rclcpp::Time & time,
-  const rclcpp::Duration & period)
+  const rclcpp::Time & /*time*/,
+  const rclcpp::Duration & /*period*/)
 #endif
 {
 //  RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Send command to robot");
