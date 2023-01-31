@@ -163,7 +163,13 @@ void AlpoHardware<HardwareInterface>::send_null_command_()
 
 //-----------------------------------------------------------------------------
 template<typename HardwareInteface>
+#if ROS_DISTRO == ROS_GALACTIC
 hardware_interface::return_type AlpoHardware<HardwareInteface>::read()
+#else
+hardware_interface::return_type AlpoHardware<HardwareInteface>::read(
+  const rclcpp::Time & time,
+  const rclcpp::Duration & period)
+#endif
 {
 //    RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Read data from robot");
   rclcpp::spin_some(node_);
@@ -183,7 +189,13 @@ hardware_interface::return_type AlpoHardware<HardwareInteface>::read()
 
 //-----------------------------------------------------------------------------
 template<typename HardwareInteface>
+#if ROS_DISTRO == ROS_GALACTIC
 hardware_interface::return_type AlpoHardware<HardwareInteface>::write()
+# else
+hardware_interface::return_type AlpoHardware<HardwareInteface>::write(
+  const rclcpp::Time & time,
+  const rclcpp::Duration & period)
+#endif
 {
 //  RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Send command to robot");
 
