@@ -6,7 +6,7 @@ import xacro
 from ament_index_python.packages import get_package_share_directory
 
 
-def urdf(prefix, mode, robot_model, controller_conf_yaml_file):
+def urdf(prefix, mode, robot_model, controller_conf_yaml_file, ros_namespace):
 
     xacro_file = (
         get_package_share_directory("alpo_description")
@@ -21,6 +21,7 @@ def urdf(prefix, mode, robot_model, controller_conf_yaml_file):
             "prefix": prefix,
             "mode": mode,
             "controller_conf_yaml_file": controller_conf_yaml_file,
+            "ros_namespace": ros_namespace
         },
     )
 
