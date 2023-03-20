@@ -5,7 +5,6 @@
   <version>0.10.3</version>
   <description>A simple bridge between ROS 1 embedded into alpo robot and ROS 2</description>
 
-  <author email="jean.laneurit@inrae.fr">Jean Laneurit</author>
   <maintainer email="jean.laneurit@inrae.fr">Jean Laneurit</maintainer>
   <license>TODO</license>
 
