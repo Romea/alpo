@@ -1,159 +1,195 @@
 <?xml version="1.0"?>
 <robot name="alpo" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
- <xacro:macro name="alpo" params="model mode prefix">
+   <xacro:macro name="alpo" params="model mode prefix">
 
-    <xacro:include filename="$(find alpo_description)/urdf/color.xacro" />
+      <xacro:include filename="$(find alpo_description)/urdf/color.xacro" />
 
-    <xacro:if value="${model == 'fat'}">
-       <xacro:include filename="$(find romea_mobile_base_description)/urdf/base2FWS4WD.chassis.xacro"/>
-       <xacro:include filename="$(find romea_mobile_base_description)/ros2_control/base2FWS4WD.ros2_control.xacro"/>
-    </xacro:if>
+      <xacro:if value="${model == 'fat'}">
+         <xacro:include
+            filename="$(find romea_mobile_base_description)/urdf/base2FWSxxx.chassis.xacro" />
+         <xacro:include
+            filename="$(find romea_mobile_base_description)/ros2_control/base2FWS4WD.ros2_control.xacro" />
+      </xacro:if>
 
-    <xacro:if value="${model == 'slim'}">
-      <xacro:include filename="$(find romea_mobile_base_description)/urdf/base2FWS4WD.chassis.xacro"/>
-      <xacro:include filename="$(find romea_mobile_base_description)/ros2_control/base2FWS2RWD.ros2_control.xacro"/>
-    </xacro:if>
+      <xacro:if value="${model == 'slim'}">
+         <xacro:include
+            filename="$(find romea_mobile_base_description)/urdf/base2FWSxxx.chassis.xacro" />
+         <xacro:include
+            filename="$(find romea_mobile_base_description)/ros2_control/base2FWS2RWD.ros2_control.xacro" />
+      </xacro:if>
 
-    <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
-    <xacro:property name="props" value="${load_yaml(conf)}" />
+      <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
+      <xacro:property name="props" value="${load_yaml(conf)}" />
 
-    <!-- Link names -->
-    <xacro:property name="base_link" value="${props['links']['base_link_name']}" />
-    <xacro:property name="base_footprint_link" value="${props['links']['base_footprint_link_name']}" />
-    <xacro:property name="inertial_link" value="${props['links']['inertial_link_name']}" />
-    <xacro:property name="front_left_wheel_steering_link" value="${props['links']['front_left_wheel_steering_link_name']}" />
-    <xacro:property name="front_right_wheel_steering_link" value="${props['links']['front_right_wheel_steering_link_name']}" />
-    <xacro:property name="front_left_wheel_spinning_link" value="${props['links']['front_left_wheel_spinning_link_name']}" />
-    <xacro:property name="front_right_wheel_spinning_link" value="${props['links']['front_right_wheel_spinning_link_name']}" />
-    <xacro:property name="rear_left_wheel_spinning_link" value="${props['links']['rear_left_wheel_spinning_link_name']}" />
-    <xacro:property name="rear_right_wheel_spinning_link" value="${props['links']['rear_right_wheel_spinning_link_name']}" />
+      <!-- Link names -->
+      <xacro:property name="base_link" value="${props['links']['base_link_name']}" />
+      <xacro:property name="base_footprint_link"
+         value="${props['links']['base_footprint_link_name']}" />
+      <xacro:property name="inertial_link" value="${props['links']['inertial_link_name']}" />
+      <xacro:property name="front_left_wheel_steering_link"
+         value="${props['links']['front_left_wheel_steering_link_name']}" />
+      <xacro:property name="front_right_wheel_steering_link"
+         value="${props['links']['front_right_wheel_steering_link_name']}" />
+      <xacro:property name="front_left_wheel_spinning_link"
+         value="${props['links']['front_left_wheel_spinning_link_name']}" />
+      <xacro:property name="front_right_wheel_spinning_link"
+         value="${props['links']['front_right_wheel_spinning_link_name']}" />
+      <xacro:property name="rear_left_wheel_spinning_link"
+         value="${props['links']['rear_left_wheel_spinning_link_name']}" />
+      <xacro:property name="rear_right_wheel_spinning_link"
+         value="${props['links']['rear_right_wheel_spinning_link_name']}" />
 
-    <!-- Joint names -->
-    <xacro:property name="base_footprint_joint" value="${props['joints']['base_footprint_joint_name']}" />
-    <xacro:property name="inertial_joint" value="${props['joints']['inertial_joint_name']}" />
-    <xacro:property name="front_left_wheel_steering_joint" value="${props['joints']['front_left_wheel_steering_joint_name']}" />
-    <xacro:property name="front_right_wheel_steering_joint" value="${props['joints']['front_right_wheel_steering_joint_name']}" />
-    <xacro:property name="front_left_wheel_spinning_joint" value="${props['joints']['front_left_wheel_spinning_joint_name']}" />
-    <xacro:property name="front_right_wheel_spinning_joint" value="${props['joints']['front_right_wheel_spinning_joint_name']}" />
-    <xacro:property name="rear_left_wheel_spinning_joint" value="${props['joints']['rear_left_wheel_spinning_joint_name']}" />
-    <xacro:property name="rear_right_wheel_spinning_joint" value="${props['joints']['rear_right_wheel_spinning_joint_name']}" />
+      <!-- Joint names -->
+      <xacro:property name="base_footprint_joint"
+         value="${props['joints']['base_footprint_joint_name']}" />
+      <xacro:property name="inertial_joint" value="${props['joints']['inertial_joint_name']}" />
+      <xacro:property name="front_left_wheel_steering_joint"
+         value="${props['joints']['front_left_wheel_steering_joint_name']}" />
+      <xacro:property name="front_right_wheel_steering_joint"
+         value="${props['joints']['front_right_wheel_steering_joint_name']}" />
+      <xacro:property name="front_left_wheel_spinning_joint"
+         value="${props['joints']['front_left_wheel_spinning_joint_name']}" />
+      <xacro:property name="front_right_wheel_spinning_joint"
+         value="${props['joints']['front_right_wheel_spinning_joint_name']}" />
+      <xacro:property name="rear_left_wheel_spinning_joint"
+         value="${props['joints']['rear_left_wheel_spinning_joint_name']}" />
+      <xacro:property name="rear_right_wheel_spinning_joint"
+         value="${props['joints']['rear_right_wheel_spinning_joint_name']}" />
 
-    <xacro:property name="mesh" value="True"/>
+      <xacro:property name="mesh" value="True" />
 
-    <!-- Base Properties -->
-    <xacro:property name="aabb_length" value="${props['geometry']['aabb']['length']}" />
-    <xacro:property name="aabb_width" value="${props['geometry']['aabb']['width']}" />
-    <xacro:property name="aabb_height" value="${props['geometry']['aabb']['height']}" />
-    <xacro:property name="aabb_center_x" value="${props['geometry']['aabb']['center'][0]}" />
-    <xacro:property name="aabb_center_y" value="${props['geometry']['aabb']['center'][1]}" />
-    <xacro:property name="aabb_center_z" value="${props['geometry']['aabb']['center'][2]}" />
+      <!-- Base Properties -->
+      <xacro:property name="aabb_length" value="${props['geometry']['aabb']['length']}" />
+      <xacro:property name="aabb_width" value="${props['geometry']['aabb']['width']}" />
+      <xacro:property name="aabb_height" value="${props['geometry']['aabb']['height']}" />
+      <xacro:property name="aabb_center_x" value="${props['geometry']['aabb']['center'][0]}" />
+      <xacro:property name="aabb_center_y" value="${props['geometry']['aabb']['center'][1]}" />
+      <xacro:property name="aabb_center_z" value="${props['geometry']['aabb']['center'][2]}" />
 
-    <xacro:property name="wheelbase" value="${props['geometry']['axles_distance']}"/>
-    <xacro:property name="front_track" value="${props['geometry']['front_axle']['wheels_distance']}"/>
-    <xacro:property name="rear_track" value="${props['geometry']['rear_axle']['wheels_distance']}"/>
-    <xacro:property name="track" value="${front_track}"/>
+      <xacro:property name="wheelbase" value="${props['geometry']['axles_distance']}" />
+      <xacro:property name="front_track"
+         value="${props['geometry']['front_axle']['wheels_distance']}" />
+      <xacro:property name="rear_track" value="${props['geometry']['rear_axle']['wheels_distance']}" />
+      <xacro:property name="track" value="${front_track}" />
 
-    <xacro:property name="ground_clearance" value="${chassis_props['ground_clearance']}"/>
+      <xacro:property name="ground_clearance" value="${chassis_props['ground_clearance']}" />
 
-    <xacro:property name="mass_body" value="${props['inertia']['mass']}" />
-    <xacro:property name="mass_base" value="${props['inertia']['mass']}" />
-    <xacro:property name="mass_center_x" value="${props['inertia']['center'][0]}" />
-    <xacro:property name="mass_center_y" value="${props['inertia']['center'][1]}" />
-    <xacro:property name="mass_center_z" value="${props['inertia']['center'][2]}" />
+      <xacro:property name="mass_body" value="${props['inertia']['mass']}" />
+      <xacro:property name="mass_base" value="${props['inertia']['mass']}" />
+      <xacro:property name="mass_center_x" value="${props['inertia']['center'][0]}" />
+      <xacro:property name="mass_center_y" value="${props['inertia']['center'][1]}" />
+      <xacro:property name="mass_center_z" value="${props['inertia']['center'][2]}" />
 
-    <xacro:property name="ground_clearance" value="${props['geometry']['ground_clearance']}"/>
-    <xacro:property name="body_reference_x" value="${props['control_point'][0]}" />
-
-
-    <!-- Steering Properties -->
-    <xacro:property name="steering_angle_max_in" value="1.04"/>
-    <xacro:property name="steering_angle_max_out" value="0.59"/>
-
-    <xacro:property name="front_wheel_y_offset" value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
-    <xacro:property name="rear_wheel_y_offset" value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
-    <xacro:property name="wheel_y_offset" value="${front_wheel_y_offset}" />
-
-    <xacro:property name="steering_link_mass" value="1" />
-    <xacro:property name="steering_link_y_size" value="${wheel_y_offset}" />
-    <xacro:property name="steering_link_xz_size" value="0.1" />
-    <xacro:property name="steering_link_y" value="${wheel_y_offset}" />
-    <xacro:property name="steering_link_xz" value="0.1" />
-
-    <!-- Wheel Properties -->
-    <xacro:property name="front_hub_carrier_offset" value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
-    <xacro:property name="rear_hub_carrier_offset" value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
-    <xacro:property name="front_wheel_radius" value="${props['geometry']['front_axle']['wheels']['radius']}" />
-    <xacro:property name="rear_wheel_radius" value="${props['geometry']['rear_axle']['wheels']['radius']}" />
-    <xacro:property name="front_wheel_width" value="${props['geometry']['front_axle']['wheels']['width']}" />
-    <xacro:property name="rear_wheel_width" value="${props['geometry']['rear_axle']['wheels']['width']}" />
-    <xacro:property name="wheel_radius" value="${front_wheel_radius}" />
-    <xacro:property name="wheel_width" value="${front_wheel_width}" />
-
-    <xacro:property name="minimal_wheel_steering_angle" value="-${props['front_wheels_steering_control']['command']['maximal_angle']}"/>
-    <xacro:property name="maximal_wheel_steering_angle" value="${props['front_wheels_steering_control']['command']['maximal_angle']}"/>
-
-    <xacro:if value="${model == 'fat'}">
-       <xacro:property name="maximal_wheel_speed" value="${props['wheels_speed_control']['command']['maximal_speed']}"/>
-    </xacro:if>
-
-    <xacro:if value="${model == 'slim'}">
-       <xacro:property name="maximal_wheel_speed" value="${props['rear_wheels_speed_control']['command']['maximal_speed']}"/>
-    </xacro:if>
-
-    <xacro:property name="wheel_mass" value="5" />
-    <xacro:property name="front_wheel_mass" value="5" />
-    <xacro:property name="rear_wheel_mass" value="5" />
-    <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
-
-    <!-- Ros2 control hardware plugin -->
-    <xacro:if value="${model == 'fat'}">
-       <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD"/>
-       <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS4WD"/>
-    </xacro:if>
-
-    <xacro:if value="${model == 'slim'}">
-       <xacro:property name="simulation_hardware_plugin" value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD"/>
-       <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD"/>
-    </xacro:if>
-
-   <!-- Mesh scale -->
-    <xacro:if value="${model == 'fat' and mesh == True}">
-       <xacro:property name="mesh_scale_x" value="1.0"/>
-    </xacro:if>
-
-    <xacro:if value="${model == 'slim' and mesh == True}">
-       <xacro:property name="mesh_scale_x" value="0.7"/>
-    </xacro:if>
+      <xacro:property name="ground_clearance" value="${props['geometry']['ground_clearance']}" />
+      <xacro:property name="body_reference_x" value="${props['control_point'][0]}" />
 
 
-    <xacro:chassis>
-      <!-- visual chassis -->
-      <visual>
-        <xacro:if value="${mesh == False}">
-          <origin xyz="${aabb_center_x-body_reference_x} ${aabb_center_y}  ${aabb_center_z-chassis_height}" rpy="0 0 0" />
-          <geometry>
-            <box size="${aabb_length} ${aabb_width} ${aabb_height}"/>
-          </geometry>
-        </xacro:if>
-        <xacro:if value="${mesh == True}">
-          <origin xyz="0 0 0" rpy="0 0 ${-pi/2}" />
-          <geometry>
-            <mesh filename="package://alpo_description/meshes/chassis.dae" scale="${mesh_scale_x} 1.0 1.0" />
-          </geometry>
-        </xacro:if>
-        <xacro:beige/>
-      </visual>
-      <!-- visual front steering -->
-      <box size="${steering_link_xz_size} ${steering_link_y_size} ${steering_link_xz_size}"/>
-      <!-- visual wheel -->
-      <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
-    </xacro:chassis>
+      <!-- Steering Properties -->
+      <xacro:property name="steering_angle_max_in" value="1.04" />
+      <xacro:property name="steering_angle_max_out" value="0.59" />
 
-    <xacro:if value="${mode == 'simulation' or mode == 'live'}">
-       <xacro:base_control mode="${mode}"/>
-    </xacro:if>
+      <xacro:property name="front_wheel_y_offset"
+         value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
+      <xacro:property name="rear_wheel_y_offset"
+         value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
+      <xacro:property name="wheel_y_offset" value="${front_wheel_y_offset}" />
 
-  </xacro:macro>
+      <xacro:property name="steering_link_mass" value="1" />
+      <xacro:property name="steering_link_y_size" value="${wheel_y_offset}" />
+      <xacro:property name="steering_link_xz_size" value="0.1" />
+      <xacro:property name="steering_link_y" value="${wheel_y_offset}" />
+      <xacro:property name="steering_link_xz" value="0.1" />
+
+      <!-- Wheel Properties -->
+      <xacro:property name="front_hub_carrier_offset"
+         value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
+      <xacro:property name="rear_hub_carrier_offset"
+         value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
+      <xacro:property name="front_wheel_radius"
+         value="${props['geometry']['front_axle']['wheels']['radius']}" />
+      <xacro:property name="rear_wheel_radius"
+         value="${props['geometry']['rear_axle']['wheels']['radius']}" />
+      <xacro:property name="front_wheel_width"
+         value="${props['geometry']['front_axle']['wheels']['width']}" />
+      <xacro:property name="rear_wheel_width"
+         value="${props['geometry']['rear_axle']['wheels']['width']}" />
+      <xacro:property name="wheel_radius" value="${front_wheel_radius}" />
+      <xacro:property name="wheel_width" value="${front_wheel_width}" />
+
+      <xacro:property name="minimal_wheel_steering_angle"
+         value="-${props['front_wheels_steering_control']['command']['maximal_angle']}" />
+      <xacro:property name="maximal_wheel_steering_angle"
+         value="${props['front_wheels_steering_control']['command']['maximal_angle']}" />
+
+      <xacro:if value="${model == 'fat'}">
+         <xacro:property name="maximal_wheel_speed"
+            value="${props['wheels_speed_control']['command']['maximal_speed']}" />
+      </xacro:if>
+
+      <xacro:if value="${model == 'slim'}">
+         <xacro:property name="maximal_wheel_speed"
+            value="${props['rear_wheels_speed_control']['command']['maximal_speed']}" />
+      </xacro:if>
+
+      <xacro:property name="wheel_mass" value="5" />
+      <xacro:property name="front_wheel_mass" value="5" />
+      <xacro:property name="rear_wheel_mass" value="5" />
+      <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
+
+      <!-- Ros2 control hardware plugin -->
+      <xacro:if value="${model == 'fat'}">
+         <xacro:property name="simulation_hardware_plugin"
+            value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD" />
+         <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS4WD" />
+      </xacro:if>
+
+      <xacro:if value="${model == 'slim'}">
+         <xacro:property name="simulation_hardware_plugin"
+            value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD" />
+         <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD" />
+      </xacro:if>
+
+      <!-- Mesh scale -->
+      <xacro:if value="${model == 'fat' and mesh == True}">
+         <xacro:property name="mesh_scale_x" value="1.0" />
+      </xacro:if>
+
+      <xacro:if value="${model == 'slim' and mesh == True}">
+         <xacro:property name="mesh_scale_x" value="0.7" />
+      </xacro:if>
+
+
+      <xacro:chassis>
+         <!-- visual chassis -->
+         <visual>
+            <xacro:if value="${mesh == False}">
+               <origin
+                  xyz="${aabb_center_x-body_reference_x} ${aabb_center_y}  ${aabb_center_z-chassis_height}"
+                  rpy="0 0 0" />
+               <geometry>
+                  <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
+               </geometry>
+            </xacro:if>
+            <xacro:if value="${mesh == True}">
+               <origin xyz="0 0 0" rpy="0 0 ${-pi/2}" />
+               <geometry>
+                  <mesh filename="package://alpo_description/meshes/chassis.dae"
+                     scale="${mesh_scale_x} 1.0 1.0" />
+               </geometry>
+            </xacro:if>
+            <xacro:beige />
+         </visual>
+         <!-- visual front steering -->
+         <box size="${steering_link_xz_size} ${steering_link_y_size} ${steering_link_xz_size}" />
+         <!-- visual wheel -->
+         <cylinder length="${wheel_width}" radius="${wheel_radius}" />
+      </xacro:chassis>
+
+      <xacro:if value="${mode == 'simulation' or mode == 'live'}">
+         <xacro:base_control mode="${mode}" />
+      </xacro:if>
+
+   </xacro:macro>
 
 </robot>
