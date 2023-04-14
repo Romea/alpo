@@ -1,9 +1,0 @@
-repositories:
-  linak_a36_msgs:
-    type: git
-    url: https://gitlab+deploy-token-799537:CsfF-mNAMrUzvX1CaUrd@gitlab.com/labcom-tiara/ros2/linak_a36_msgs.git
-    version: master
-  # ros1_bridge:
-  #   type: git
-  #   url: https://gitlab+deploy-token-799537:CsfF-mNAMrUzvX1CaUrd@gitlab.com/labcom-tiara/ros2/ros1_bridge.git
-  #   version: master

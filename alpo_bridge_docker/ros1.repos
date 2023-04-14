@@ -1,5 +1,0 @@
-repositories:
-  linak_a36_msgs:
-    type: git
-    url: https://gitlab+deploy-token-804094:_adW4Fwn6BNLxNUW2SaM@gitlab.com/labcom-tiara/ros1/cylinder_interface.git
-    version: master
