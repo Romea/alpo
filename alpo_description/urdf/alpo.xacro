@@ -8,15 +8,15 @@
       <xacro:if value="${model == 'fat'}">
          <xacro:include
             filename="$(find romea_mobile_base_description)/urdf/base2FWSxxx.chassis.xacro" />
-         <xacro:include
-            filename="$(find romea_mobile_base_description)/ros2_control/base2FWS4WD.ros2_control.xacro" />
+         <!-- <xacro:include
+            filename="$(find romea_mobile_base_description)/ros2_control/base2FWS4WD.ros2_control.xacro" /> -->
       </xacro:if>
 
       <xacro:if value="${model == 'slim'}">
          <xacro:include
             filename="$(find romea_mobile_base_description)/urdf/base2FWSxxx.chassis.xacro" />
-         <xacro:include
-            filename="$(find romea_mobile_base_description)/ros2_control/base2FWS2RWD.ros2_control.xacro" />
+         <!-- <xacro:include
+            filename="$(find romea_mobile_base_description)/ros2_control/base2FWS2RWD.ros2_control.xacro" /> -->
       </xacro:if>
 
       <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
@@ -138,7 +138,7 @@
       <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
 
       <!-- Ros2 control hardware plugin -->
-      <xacro:if value="${model == 'fat'}">
+      <!-- <xacro:if value="${model == 'fat'}">
          <xacro:property name="simulation_hardware_plugin"
             value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD" />
          <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS4WD" />
@@ -148,7 +148,7 @@
          <xacro:property name="simulation_hardware_plugin"
             value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD" />
          <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD" />
-      </xacro:if>
+      </xacro:if> -->
 
       <!-- Mesh scale -->
       <xacro:if value="${model == 'fat' and mesh == True}">
@@ -186,9 +186,9 @@
          <cylinder length="${wheel_width}" radius="${wheel_radius}" />
       </xacro:chassis>
 
-      <xacro:if value="${mode == 'simulation' or mode == 'live'}">
+      <!-- <xacro:if value="${mode == 'simulation' or mode == 'live'}">
          <xacro:base_control mode="${mode}" />
-      </xacro:if>
+      </xacro:if> -->
 
    </xacro:macro>
 

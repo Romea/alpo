@@ -14,13 +14,13 @@
 
 
 from ament_index_python.packages import get_package_share_directory
-import alpo_description
+from alpo_description import urdf
 
 
-def urdf_description(prefix, mode, model, ros_prefix):
+def urdf_description(prefix, mode, base_name, robot_model, ros_prefix):
 
     controller_manager_yaml_file = (
         get_package_share_directory("alpo_bringup") + "/config/controller_manager.yaml"
     )
 
-    return alpo_description.urdf(prefix, mode, model, controller_manager_yaml_file, ros_prefix)
+    return urdf(prefix, mode, base_name, robot_model, controller_manager_yaml_file, ros_prefix)

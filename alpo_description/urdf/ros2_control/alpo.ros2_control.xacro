@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<robot name="alpo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="alpo_ros2_control" params="model mode prefix base_name">
+
+
+    <xacro:if value="${model == 'fat'}">
+      <xacro:include
+        filename="$(find romea_mobile_base_description)/ros2_control/base2FWS4WD.ros2_control.xacro" />
+    </xacro:if>
+
+    <xacro:if value="${model == 'slim'}">
+      <xacro:include
+        filename="$(find romea_mobile_base_description)/ros2_control/base2FWS2RWD.ros2_control.xacro" />
+    </xacro:if>
+
+
+    <xacro:property name="conf" value="$(find adap2e_description)/config/adap2e_${model}.yaml" />
+    <xacro:property name="props" value="${load_yaml(conf)}" />
+
+
+    <!-- Joint names -->
+    <xacro:property name="base_footprint_joint"
+      value="${props['joints']['base_footprint_joint_name']}" />
+    <xacro:property name="inertial_joint" value="${props['joints']['inertial_joint_name']}" />
+    <xacro:property name="front_left_wheel_steering_joint"
+      value="${props['joints']['front_left_wheel_steering_joint_name']}" />
+    <xacro:property name="front_right_wheel_steering_joint"
+      value="${props['joints']['front_right_wheel_steering_joint_name']}" />
+    <xacro:property name="front_left_wheel_spinning_joint"
+      value="${props['joints']['front_left_wheel_spinning_joint_name']}" />
+    <xacro:property name="front_right_wheel_spinning_joint"
+      value="${props['joints']['front_right_wheel_spinning_joint_name']}" />
+    <xacro:property name="rear_left_wheel_spinning_joint"
+      value="${props['joints']['rear_left_wheel_spinning_joint_name']}" />
+    <xacro:property name="rear_right_wheel_spinning_joint"
+      value="${props['joints']['rear_right_wheel_spinning_joint_name']}" />
+
+
+    <!-- Geometry -->
+    <xacro:property name="wheelbase"
+      value="${props['geometry']['axles_distance']}" />
+    <xacro:property name="front_track"
+      value="${props['geometry']['front_axle']['wheels_distance']}" />
+    <xacro:property name="rear_track"
+      value="${props['geometry']['rear_axle']['wheels_distance']}" />
+    <xacro:property name="front_wheel_radius"
+      value="${props['geometry']['front_axle']['wheels']['radius']}" />
+    <xacro:property name="rear_wheel_radius"
+      value="${props['geometry']['rear_axle']['wheels']['radius']}" />
+    <xacro:property name="front_hub_carrier_offset"
+      value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
+    <xacro:property name="rear_hub_carrier_offset"
+      value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
+
+    <!-- simulation plugins -->
+    <xacro:if value="${model == 'fat'}">
+      <xacro:property name="simulation_hardware_plugin"
+        value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD" />
+      <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS4WD" />
+    </xacro:if>
+
+    <xacro:if value="${model == 'slim'}">
+      <xacro:property name="simulation_hardware_plugin"
+        value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD" />
+      <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD" />
+    </xacro:if>
+
+
+    <xacro:base_control mode="${mode}" base_name="${base_name}" />
+
+  </xacro:macro>
+
+</robot>

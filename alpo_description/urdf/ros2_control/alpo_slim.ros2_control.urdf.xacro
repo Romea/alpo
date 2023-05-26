@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="alpo_slim_ros2_control" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="prefix" default="adap2e_" />
+  <xacro:arg name="mode" default="simulation" />
+  <xacro:arg name="base_name" default="base" />
+
+
+  <xacro:include filename="$(find alpo_description)/urdf/ros2_control/alpo.ros2_control.xacro" />
+
+  <xacro:alpo_ros2_control
+    model="slim"
+    mode="$(arg mode)"
+    prefix="$(arg prefix)"
+    base_name="$(arg base_name)" />
+
+</robot>
