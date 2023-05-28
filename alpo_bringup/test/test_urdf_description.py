@@ -27,10 +27,15 @@ def urdf_xml(mode, model):
 
     return ET.fromstring(
         subprocess.check_output(
-            [exe, "mode:" + mode, "robot_model:" + model, "robot_namespace:robot"],
+            [exe, "mode:" + mode, "robot_model:" + model, "base_name:base", "robot_namespace:robot"],
             encoding="utf-8",
         )
     )
+
+
+def ros2_control_urdf_xml(mode, model):
+    urdf_xml(mode, model)
+    return ET.parse("/tmp/robot_base_ros2_control.urdf")
 
 
 def test_footprint_link_name():
@@ -39,19 +44,19 @@ def test_footprint_link_name():
 
 def test_hardware_plugin_name():
 
-    assert urdf_xml("live", "fat").find(
+    assert ros2_control_urdf_xml("live", "fat").find(
         "ros2_control/hardware/plugin"
     ).text == "alpo_hardware/AlpoHardware2FWS4WD"
 
-    assert urdf_xml("live", "slim").find(
+    assert ros2_control_urdf_xml("live", "slim").find(
         "ros2_control/hardware/plugin"
     ).text == "alpo_hardware/AlpoHardware2FWS2RWD"
 
-    assert urdf_xml("simulation", "slim").find(
+    assert ros2_control_urdf_xml("simulation", "slim").find(
         "ros2_control/hardware/plugin"
     ).text == "romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD"
 
-    assert urdf_xml("simulation", "fat").find(
+    assert ros2_control_urdf_xml("simulation", "fat").find(
         "ros2_control/hardware/plugin"
     ).text == "romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD"
 
@@ -59,7 +64,6 @@ def test_hardware_plugin_name():
 def test_controller_filename_name():
 
     assert (
-        urdf_xml("simulation", "slim").find("gazebo/plugin/parameters").text
-        == get_package_share_directory("alpo_bringup")
-        + "/config/controller_manager.yaml"
+        urdf_xml("simulation", "slim").find("gazebo/plugin/controller_manager_config_file").text
+        == get_package_share_directory("alpo_bringup") + "/config/controller_manager.yaml"
     )

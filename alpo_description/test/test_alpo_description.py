@@ -21,8 +21,11 @@ from alpo_description import urdf
 def urdf_xml(mode, model):
     prefix = "robot_"
     ros_prefix = "/robot/"
+    base_name = "base"
     controller_conf_yaml_file = mode + "_" + model + "_controller.yaml"
-    return ET.fromstring(urdf(prefix, mode, model, controller_conf_yaml_file, ros_prefix))
+    return ET.fromstring(
+        urdf(prefix, mode, base_name, model, controller_conf_yaml_file, ros_prefix)
+    )
 
 
 def ros2_control_urdf_xml(mode, model):
@@ -47,12 +50,16 @@ def test_hardware_plugin_name():
     )
 
     assert (
-        ros2_control_urdf_xml("simulation", "fat").find("ros2_control/hardware/plugin").text
+        ros2_control_urdf_xml("simulation", "fat")
+        .find("ros2_control/hardware/plugin")
+        .text
         == "romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD"
     )
 
     assert (
-        ros2_control_urdf_xml("simulation", "slim").find("ros2_control/hardware/plugin").text
+        ros2_control_urdf_xml("simulation", "slim")
+        .find("ros2_control/hardware/plugin")
+        .text
         == "romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD"
     )
 
@@ -60,6 +67,8 @@ def test_hardware_plugin_name():
 def test_controller_filename_name():
 
     assert (
-        urdf_xml("simulation", "slim").find("gazebo/plugin/controller_manager_config_file").text
+        urdf_xml("simulation", "slim")
+        .find("gazebo/plugin/controller_manager_config_file")
+        .text
         == "simulation_slim_controller.yaml"
     )
