@@ -25,6 +25,11 @@ def urdf_xml(mode, model):
     return ET.fromstring(urdf(prefix, mode, model, controller_conf_yaml_file, ros_prefix))
 
 
+def ros2_control_urdf_xml(mode, model):
+    urdf_xml(mode, model)
+    return ET.parse("/tmp/robot_base_ros2_control.urdf")
+
+
 def test_footprint_link_name():
     assert urdf_xml("live", "slim").find("link").get("name") == "robot_base_footprint"
 
@@ -32,22 +37,22 @@ def test_footprint_link_name():
 def test_hardware_plugin_name():
 
     assert (
-        urdf_xml("live", "fat").find("ros2_control/hardware/plugin").text
+        ros2_control_urdf_xml("live", "fat").find("ros2_control/hardware/plugin").text
         == "alpo_hardware/AlpoHardware2FWS4WD"
     )
 
     assert (
-        urdf_xml("live", "slim").find("ros2_control/hardware/plugin").text
+        ros2_control_urdf_xml("live", "slim").find("ros2_control/hardware/plugin").text
         == "alpo_hardware/AlpoHardware2FWS2RWD"
     )
 
     assert (
-        urdf_xml("simulation", "fat").find("ros2_control/hardware/plugin").text
+        ros2_control_urdf_xml("simulation", "fat").find("ros2_control/hardware/plugin").text
         == "romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD"
     )
 
     assert (
-        urdf_xml("simulation", "slim").find("ros2_control/hardware/plugin").text
+        ros2_control_urdf_xml("simulation", "slim").find("ros2_control/hardware/plugin").text
         == "romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD"
     )
 
@@ -55,6 +60,6 @@ def test_hardware_plugin_name():
 def test_controller_filename_name():
 
     assert (
-        urdf_xml("simulation", "slim").find("gazebo/plugin/parameters").text
+        urdf_xml("simulation", "slim").find("gazebo/plugin/controller_manager_config_file").text
         == "simulation_slim_controller.yaml"
     )

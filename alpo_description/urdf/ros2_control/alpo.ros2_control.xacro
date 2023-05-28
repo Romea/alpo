@@ -15,7 +15,7 @@
     </xacro:if>
 
 
-    <xacro:property name="conf" value="$(find adap2e_description)/config/adap2e_${model}.yaml" />
+    <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
     <xacro:property name="props" value="${load_yaml(conf)}" />
 
 
