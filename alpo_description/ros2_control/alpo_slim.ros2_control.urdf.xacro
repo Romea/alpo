@@ -6,7 +6,7 @@
   <xacro:arg name="base_name" default="base" />
 
 
-  <xacro:include filename="$(find alpo_description)/urdf/ros2_control/alpo.ros2_control.xacro" />
+  <xacro:include filename="$(find alpo_description)/ros2_control/alpo.ros2_control.xacro" />
 
   <xacro:alpo_ros2_control
     model="slim"
