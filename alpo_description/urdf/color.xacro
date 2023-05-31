@@ -2,25 +2,26 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="color">
     <xacro:macro name="beige" params="">
         <material name="beige">
-            <color rgba="0.89 0.86 0.78 1"/>
+            <color rgba="0.89 0.86 0.78 1" />
         </material>
     </xacro:macro>
     <xacro:macro name="beige_gazebo" params="link">
         <gazebo reference="${link}">
             <visual>
-                <material>
-                    <ambient>0.89 0.86 0.78 1</ambient>
-                    <diffuse>0.89 0.86 0.78 1</diffuse>
-                    <specular>0 0 0 0</specular>
-                    <emissive>0 0 0 1</emissive>
-                </material>
+                <lighting>1</lighting>
+                <!-- <material> -->
+                <!-- <ambient>0.89 0.86 0.78 1</ambient> -->
+                <!-- <diffuse>0.89 0.86 0.78 1</diffuse> -->
+                <!-- <specular>0 0 0 0</specular> -->
+                <!-- <emissive>0 0 0 1</emissive> -->
+                <!-- </material> -->
             </visual>
         </gazebo>
     </xacro:macro>
 
     <xacro:macro name="brown" params="">
         <material name="brown">
-            <color rgba="0.4 0.27 0.18 1"/>
+            <color rgba="0.4 0.27 0.18 1" />
         </material>
     </xacro:macro>
     <xacro:macro name="brown_gazebo" params="link">
@@ -35,4 +36,18 @@
             </visual>
         </gazebo>
     </xacro:macro>
+
+    <xacro:macro name="pom_gazebo_material" params="link">
+        <gazebo reference="${link}">
+            <visual>
+                <material>
+                    <script>
+                        <uri>package://alpo_description/meshes/pom.material</uri>
+                        <name>alpo/pom</name>
+                    </script>
+                </material>
+            </visual>
+        </gazebo>
+    </xacro:macro>
+
 </robot>

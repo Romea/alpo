@@ -4,19 +4,16 @@
    <xacro:macro name="alpo" params="model mode prefix">
 
       <xacro:include filename="$(find alpo_description)/urdf/color.xacro" />
+      <xacro:include filename="$(find alpo_description)/urdf/half_leg.xacro" />
 
       <xacro:if value="${model == 'fat'}">
          <xacro:include
             filename="$(find romea_mobile_base_description)/urdf/base2FWSxxx.chassis.xacro" />
-         <!-- <xacro:include
-            filename="$(find romea_mobile_base_description)/ros2_control/base2FWS4WD.ros2_control.xacro" /> -->
       </xacro:if>
 
       <xacro:if value="${model == 'slim'}">
          <xacro:include
             filename="$(find romea_mobile_base_description)/urdf/base2FWSxxx.chassis.xacro" />
-         <!-- <xacro:include
-            filename="$(find romea_mobile_base_description)/ros2_control/base2FWS2RWD.ros2_control.xacro" /> -->
       </xacro:if>
 
       <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
@@ -67,11 +64,14 @@
       <xacro:property name="aabb_center_y" value="${props['geometry']['aabb']['center'][1]}" />
       <xacro:property name="aabb_center_z" value="${props['geometry']['aabb']['center'][2]}" />
 
-      <xacro:property name="wheelbase" value="${props['geometry']['axles_distance']}" />
+      <xacro:property name="wheelbase"
+         value="${props['geometry']['axles_distance']}" />
       <xacro:property name="front_track"
          value="${props['geometry']['front_axle']['wheels_distance']}" />
-      <xacro:property name="rear_track" value="${props['geometry']['rear_axle']['wheels_distance']}" />
-      <xacro:property name="track" value="${front_track}" />
+      <xacro:property name="rear_track"
+         value="${props['geometry']['rear_axle']['wheels_distance']}" />
+      <xacro:property name="track"
+         value="${front_track}" />
 
       <xacro:property name="ground_clearance" value="${chassis_props['ground_clearance']}" />
 
@@ -137,27 +137,14 @@
       <xacro:property name="rear_wheel_mass" value="5" />
       <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
 
-      <!-- Ros2 control hardware plugin -->
-      <!-- <xacro:if value="${model == 'fat'}">
-         <xacro:property name="simulation_hardware_plugin"
-            value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD" />
-         <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS4WD" />
-      </xacro:if>
-
-      <xacro:if value="${model == 'slim'}">
-         <xacro:property name="simulation_hardware_plugin"
-            value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD" />
-         <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD" />
-      </xacro:if> -->
-
       <!-- Mesh scale -->
-      <xacro:if value="${model == 'fat' and mesh == True}">
+      <!-- <xacro:if value="${model == 'fat' and mesh == True}">
          <xacro:property name="mesh_scale_x" value="1.0" />
       </xacro:if>
 
       <xacro:if value="${model == 'slim' and mesh == True}">
          <xacro:property name="mesh_scale_x" value="0.7" />
-      </xacro:if>
+      </xacro:if> -->
 
 
       <xacro:chassis>
@@ -174,8 +161,15 @@
             <xacro:if value="${mesh == True}">
                <origin xyz="0 0 0" rpy="0 0 ${-pi/2}" />
                <geometry>
-                  <mesh filename="package://alpo_description/meshes/chassis.dae"
-                     scale="${mesh_scale_x} 1.0 1.0" />
+                  <xacro:if value="${model == 'fat'}">
+                     <mesh filename="package://alpo_description/meshes/pom_4x4.obj" />
+                  </xacro:if>
+                  <xacro:if value="${model == 'slim'}">
+                     <mesh filename="package://alpo_description/meshes/pom_slim.obj" />
+                  </xacro:if>
+
+                  <!-- <mesh filename="package://alpo_description/meshes/chassis.dae"
+                     scale="${mesh_scale_x} 1.0 1.0" /> -->
                </geometry>
             </xacro:if>
             <xacro:beige />
@@ -185,6 +179,17 @@
          <!-- visual wheel -->
          <cylinder length="${wheel_width}" radius="${wheel_radius}" />
       </xacro:chassis>
+
+      <xacro:if value="${mesh == True}">
+         <xacro:half_leg side="left">
+            <origin xyz="1.5 ${aabb_width / 2 - 0.32} -0.032" rpy="-1.6525 0 ${pi/2}" />
+         </xacro:half_leg>
+         <xacro:half_leg side="right">
+            <origin xyz="1.5 ${-aabb_width / 2} -0.032" rpy="-1.6525 0 ${pi/2}" />
+         </xacro:half_leg>
+      </xacro:if>
+
+      <xacro:pom_gazebo_material link="${prefix}${base_link}" />
 
       <!-- <xacro:if value="${mode == 'simulation' or mode == 'live'}">
          <xacro:base_control mode="${mode}" />

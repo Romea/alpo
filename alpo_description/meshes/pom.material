@@ -1,0 +1,15 @@
+material alpo/pom
+{
+  technique
+  {
+    pass
+    {
+      specular 1.0 1.0 1.0 10.5
+
+      texture_unit
+      {
+        texture pom_texture.png
+      }
+    }
+  }
+}

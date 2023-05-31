@@ -7,13 +7,13 @@
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
-                    <mesh filename="package://alpo_description/meshes/half_leg.dae"/>
+                    <mesh filename="package://alpo_description/meshes/half_leg.obj" />
                 </geometry>
-                <xacro:beige/>
+                <xacro:beige />
             </visual>
         </link>
         <joint name="${prefix}half_leg_${side}_joint" type="fixed">
-            <xacro:insert_block name="joint_origin"/>
+            <xacro:insert_block name="joint_origin" />
             <parent link="${prefix}base_link" />
             <child link="${prefix}half_leg_${side}_link" />
         </joint>
