@@ -1,34 +1,34 @@
 repositories:
   romea_core/romea_common:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_core/romea_common.git
+    url: https://github.com/Romea/romea-core-common.git
     version: devel
   romea_core/romea_mobile_base:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_core/romea_mobile_base.git
+    url: https://github.com/Romea/romea-core-mobile-base.git
     version: devel
 
   romea_ros2/tools/romea_common:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/tools/romea_common.git
+    url: https://github.com/Romea/romea-ros2-common.git
     version: devel
   romea_ros2/tools/romea_cmd_mux:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/tools/romea_cmd_mux.git
+    url: https://github.com/Romea/romea-core-cmd_mux.git
     version: devel
   romea_ros2/interfaces/teleoperation/romea_joytick:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/teleoperation/romea_joy.git
+    url: https://github.com/Romea/romea-ros2-joy.git
     version: devel
   romea_ros2/interfaces/teleoperation/romea_teleop:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/teleoperation/romea_teleop.git
+    url: https://github.com/Romea/romea-ros2-teleop.git
     version: devel
   romea_ros2/interfaces/vehicles/romea_mobile_base:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/romea_mobile_base.git
+    url: https://github.com/Romea/romea-ros2-mobile-base.git
     version: devel
   romea_ros2/interfaces/vehicles/alpo:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/alpo.git
+    url: https://github.com/Romea/alpo.git
     version: devel
