@@ -101,6 +101,8 @@ void AlpoBridge::ros1_odometry_callback_(const Ros1OdomMsg::ConstPtr & ros1_msg)
 void AlpoBridge::ros1_joint_states_callback_(const Ros1JointStatesMsg::ConstPtr & ros1_msg)
 {
   Ros2JointStatesMsg ros2_msg;
+  ros2_msg.header.stamp = ros2_node_ptr_->get_clock()->now();
+  ros2_msg.header.frame_id = ros1_msg->header.frame_id;
   ros2_msg.name = ros1_msg->name;
   ros2_msg.position = ros1_msg->position;
   ros2_msg.velocity = ros1_msg->velocity;
