@@ -71,18 +71,18 @@ AlpoHardware<HardwareInterface>::AlpoHardware()
 : HardwareSystemInterface<HardwareInterface>(),
   front_wheel_radius_(0),
   rear_wheel_radius_(0),
-//  front_left_wheel_steering_angle_measure_(0),
-//  front_right_wheel_steering_angle_measure_(0),
-//  front_left_wheel_angular_speed_measure_(0),
-//  front_right_wheel_angular_speed_measure_(0),
-//  rear_left_wheel_angular_speed_measure_(0),
-//  rear_right_wheel_angular_speed_measure_(0),
-  front_left_wheel_steering_angle_measure_(std::numeric_limits<double>::quiet_NaN()),
-  front_right_wheel_steering_angle_measure_(std::numeric_limits<double>::quiet_NaN()),
-  front_left_wheel_angular_speed_measure_(std::numeric_limits<double>::quiet_NaN()),
-  front_right_wheel_angular_speed_measure_(std::numeric_limits<double>::quiet_NaN()),
-  rear_left_wheel_angular_speed_measure_(std::numeric_limits<double>::quiet_NaN()),
-  rear_right_wheel_angular_speed_measure_(std::numeric_limits<double>::quiet_NaN()),
+  front_left_wheel_steering_angle_measure_(0),
+  front_right_wheel_steering_angle_measure_(0),
+  front_left_wheel_angular_speed_measure_(0),
+  front_right_wheel_angular_speed_measure_(0),
+  rear_left_wheel_angular_speed_measure_(0),
+  rear_right_wheel_angular_speed_measure_(0),
+  // front_left_wheel_steering_angle_measure_(std::numeric_limits<double>::quiet_NaN()),
+  // front_right_wheel_steering_angle_measure_(std::numeric_limits<double>::quiet_NaN()),
+  // front_left_wheel_angular_speed_measure_(std::numeric_limits<double>::quiet_NaN()),
+  // front_right_wheel_angular_speed_measure_(std::numeric_limits<double>::quiet_NaN()),
+  // rear_left_wheel_angular_speed_measure_(std::numeric_limits<double>::quiet_NaN()),
+  // rear_right_wheel_angular_speed_measure_(std::numeric_limits<double>::quiet_NaN()),
   front_left_wheel_steering_angle_command_(0),
   front_right_wheel_steering_angle_command_(0),
   front_left_wheel_angular_speed_command_(0),
@@ -211,6 +211,7 @@ hardware_interface::return_type AlpoHardware<HardwareInteface>::write(
 {
 //  RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Send command to robot");
 
+  get_hardware_command_();
   send_command_();
 
   return hardware_interface::return_type::OK;
