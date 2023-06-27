@@ -10,11 +10,11 @@ if(${ROS_VERSION} EQUAL 1)
 
     # Default to C++14
     if(NOT CMAKE_CXX_STANDARD)
-       set(CMAKE_CXX_STANDARD 14)
+        set(CMAKE_CXX_STANDARD 14)
     endif()
 
     if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-       add_compile_options(-Wall -Wextra)
+        add_compile_options(-Wall -Wextra)
     endif()
 
     #find ROS 2 packages
@@ -36,11 +36,11 @@ if(${ROS_VERSION} EQUAL 1)
     find_ros1_package(ackermann_msgs)
     find_ros1_package(nav_msgs)
 
-    add_executable(${PROJECT_NAME}
+    add_executable(${PROJECT_NAME}_node
       src/alpo_bridge_node.cpp
       src/alpo_bridge.cpp)
 
-    ament_target_dependencies(${PROJECT_NAME}
+    ament_target_dependencies(${PROJECT_NAME}_node
       rclcpp
       std_msgs
       sensor_msgs
@@ -54,8 +54,12 @@ if(${ROS_VERSION} EQUAL 1)
     )
 
     install(TARGETS
-    ${PROJECT_NAME}
-    DESTINATION lib/${PROJECT_NAME})
+        ${PROJECT_NAME}_node
+        DESTINATION lib/${PROJECT_NAME})
+
+    install(PROGRAMS
+        scripts/alpo_bridge
+        DESTINATION lib/${PROJECT_NAME})
 
     ament_package()
 
