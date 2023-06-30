@@ -149,15 +149,14 @@ hardware_interface::return_type AlpoHardware<HardwareInterface>::load_info_(
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-HardwareSystemInterface<HardwareInterface>::on_init(
-  const hardware_interface::HardwareInfo & hardware_info)
+AlpoHardware<HardwareInterface>::on_init(const hardware_interface::HardwareInfo & hardware_info)
 {
   if (hardware_interface::SystemInterface::on_init(hardware_info) != CallbackReturn::SUCCESS) {
     return CallbackReturn::ERROR;
   }
 
-  if (load_info_(hardware_info) == hardware_interface::return_type::OK &&
-    load_interface_(hardware_info) == hardware_interface::return_type::OK)
+  if (this->load_info_(hardware_info) == hardware_interface::return_type::OK &&
+    this->load_interface_(hardware_info) == hardware_interface::return_type::OK)
   {
     std::string ns = "_" + hardware_info.name;
     std::replace(ns.begin(), ns.end(), '_', '/');

@@ -56,6 +56,9 @@ public:
     const rclcpp::Duration & period)override;
 #endif
 
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_init(
+    const hardware_interface::HardwareInfo & hardware_info) override;
+
 private:
   hardware_interface::return_type connect_() override;
 
