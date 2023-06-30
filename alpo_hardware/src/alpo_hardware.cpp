@@ -96,14 +96,14 @@ AlpoHardware<HardwareInterface>::AlpoHardware()
 #endif
 
 
-  node_ = rclcpp::Node::make_shared("mobile_base_controller_bridge");
-  auto callback = std::bind(
-    &AlpoHardware<HardwareInterface>::joint_states_callback_, this,
-    std::placeholders::_1);
-  cmd_steer_pub_ = node_->create_publisher<ackermann_msgs::msg::AckermannDrive>(
-    "/alpo_bridge/vehicle_controller/cmd_steer", sensor_data_qos());
-  joint_states_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
-    "/alpo_bridge/vehicle_controller/joint_states", best_effort(1), callback);
+  // node_ = rclcpp::Node::make_shared("alpo_hardware");
+  // auto callback = std::bind(
+  //   &AlpoHardware<HardwareInterface>::joint_states_callback_, this,
+  //   std::placeholders::_1);
+  // cmd_steer_pub_ = node_->create_publisher<ackermann_msgs::msg::AckermannDrive>(
+  //   "/alpo_bridge/vehicle_controller/cmd_steer", sensor_data_qos());
+  // joint_states_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
+  //   "/alpo_bridge/vehicle_controller/joint_states", best_effort(1), callback);
 }
 
 
@@ -111,7 +111,7 @@ AlpoHardware<HardwareInterface>::AlpoHardware()
 template<typename HardwareInterface>
 hardware_interface::return_type AlpoHardware<HardwareInterface>::connect_()
 {
-  RCLCPP_ERROR(rclcpp::get_logger("AlpoHardware"), "Init communication with robot");
+  RCLCPP_ERROR(node_->get_logger(), "Init communication with robot");
 
   send_null_command_();
   return hardware_interface::return_type::OK;
@@ -121,7 +121,7 @@ hardware_interface::return_type AlpoHardware<HardwareInterface>::connect_()
 template<typename HardwareInterface>
 hardware_interface::return_type AlpoHardware<HardwareInterface>::disconnect_()
 {
-  RCLCPP_ERROR(rclcpp::get_logger("Adap2eHardware"), "Close communication with robot");
+  RCLCPP_ERROR(node_->get_logger(), "Close communication with robot");
 
   send_null_command_();
   return hardware_interface::return_type::OK;
@@ -132,7 +132,7 @@ template<typename HardwareInterface>
 hardware_interface::return_type AlpoHardware<HardwareInterface>::load_info_(
   const hardware_interface::HardwareInfo & hardware_info)
 {
-  RCLCPP_ERROR_STREAM(rclcpp::get_logger("AlpoHardware"), "load_info");
+  RCLCPP_ERROR_STREAM(node_->get_logger(), "load_info");
 
   try {
     wheelbase_ = get_parameter<double>(hardware_info, "wheelbase");
@@ -141,8 +141,40 @@ hardware_interface::return_type AlpoHardware<HardwareInterface>::load_info_(
     rear_wheel_radius_ = get_parameter<float>(hardware_info, "rear_wheel_radius");
     return hardware_interface::return_type::OK;
   } catch (std::runtime_error & e) {
-    RCLCPP_FATAL_STREAM(rclcpp::get_logger("AlpoHardware"), e.what());
+    RCLCPP_FATAL_STREAM(node_->get_logger(), e.what());
     return hardware_interface::return_type::ERROR;
+  }
+}
+
+//-----------------------------------------------------------------------------
+template<typename HardwareInterface>
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+HardwareSystemInterface<HardwareInterface>::on_init(
+  const hardware_interface::HardwareInfo & hardware_info)
+{
+  if (hardware_interface::SystemInterface::on_init(hardware_info) != CallbackReturn::SUCCESS) {
+    return CallbackReturn::ERROR;
+  }
+
+  if (load_info_(hardware_info) == hardware_interface::return_type::OK &&
+    load_interface_(hardware_info) == hardware_interface::return_type::OK)
+  {
+    std::string ns = "_" + hardware_info.name;
+    std::replace(ns.begin(), ns.end(), '_', '/');
+    std::cout << " hardware node_name " << ns << std::endl;
+    node_ = rclcpp::Node::make_shared("hardware", ns);
+
+    auto callback = std::bind(
+      &AlpoHardware<HardwareInterface>::joint_states_callback_, this, std::placeholders::_1);
+
+    cmd_steer_pub_ = node_->create_publisher<ackermann_msgs::msg::AckermannDrive>(
+      ns + "/bridge/cmd_steer", sensor_data_qos());
+    joint_states_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
+      ns + "/bridge/vehicle_controller/joint_states", best_effort(1), callback);
+
+    return CallbackReturn::SUCCESS;
+  } else {
+    return CallbackReturn::ERROR;
   }
 }
 
@@ -193,7 +225,7 @@ hardware_interface::return_type AlpoHardware<HardwareInteface>::read(
 #endif
     return hardware_interface::return_type::OK;
   } catch (std::runtime_error & e) {
-    RCLCPP_FATAL_STREAM(rclcpp::get_logger("AlpoHardware"), e.what());
+    RCLCPP_FATAL_STREAM(node_->get_logger(), e.what());
     return hardware_interface::return_type::ERROR;
   }
 }
@@ -222,6 +254,7 @@ template<>
 void AlpoHardware<HardwareInterface2FWS4WD>::joint_states_callback_(
   const sensor_msgs::msg::JointState::ConstSharedPtr msg)
 {
+  // try {
   front_left_wheel_steering_angle_measure_ =
     position(*msg, "front_left_wheel_steering_joint");
   front_right_wheel_steering_angle_measure_ =
@@ -234,6 +267,11 @@ void AlpoHardware<HardwareInterface2FWS4WD>::joint_states_callback_(
     velocity(*msg, "rear_left_wheel_spinning_joint");
   rear_right_wheel_angular_speed_measure_ =
     velocity(*msg, "rear_right_wheel_spinning_joint");
+  // } catch (std::runtime_error & e) {
+  // std::stringstream msg;
+
+  // std::throw()
+  // }
 }
 
 //-----------------------------------------------------------------------------
