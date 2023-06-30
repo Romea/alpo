@@ -173,9 +173,9 @@ AlpoHardware<HardwareInterface>::on_init(const hardware_interface::HardwareInfo 
     joint_states_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
       ns + "/bridge/vehicle_controller/joint_states", best_effort(1), callback);
 
-    return CallbackReturn::SUCCESS;
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   } else {
-    return CallbackReturn::ERROR;
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
   }
 }
 
