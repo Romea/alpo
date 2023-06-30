@@ -53,6 +53,20 @@
     <xacro:property name="rear_hub_carrier_offset"
       value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
 
+
+    <xacro:property name="maximal_wheel_steering_angle"
+      value="${props['front_wheels_steering_control']['command']['maximal_angle']}" />
+
+    <xacro:if value="${model == 'fat'}">
+      <xacro:property name="maximal_wheel_speed"
+        value="${props['wheels_speed_control']['command']['maximal_speed']}" />
+    </xacro:if>
+
+    <xacro:if value="${model == 'slim'}">
+      <xacro:property name="maximal_wheel_speed"
+        value="${props['rear_wheels_speed_control']['command']['maximal_speed']}" />
+    </xacro:if>
+
     <!-- simulation plugins -->
     <xacro:if value="${model == 'fat'}">
       <xacro:property name="simulation_hardware_plugin"
