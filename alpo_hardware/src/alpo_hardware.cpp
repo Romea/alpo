@@ -151,8 +151,10 @@ template<typename HardwareInterface>
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 AlpoHardware<HardwareInterface>::on_init(const hardware_interface::HardwareInfo & hardware_info)
 {
-  if (hardware_interface::SystemInterface::on_init(hardware_info) != CallbackReturn::SUCCESS) {
-    return CallbackReturn::ERROR;
+  if (hardware_interface::SystemInterface::on_init(hardware_info) !=
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS)
+  {
+    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
   }
 
   if (this->load_info_(hardware_info) == hardware_interface::return_type::OK &&
