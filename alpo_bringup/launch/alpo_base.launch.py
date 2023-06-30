@@ -115,12 +115,12 @@ def launch_setup(context, *args, **kwargs):
     )
 
     return [
-        alpo_bridge,
         GroupAction(
             actions=[
                 SetParameter(name="use_sim_time", value=(mode != "live")),
                 PushRosNamespace(robot_namespace),
                 PushRosNamespace(base_name),
+                alpo_bridge,
                 controller_manager,
                 controller,
                 cmd_mux,

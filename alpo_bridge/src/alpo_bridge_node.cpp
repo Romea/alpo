@@ -63,7 +63,7 @@ int main(int argc, char * argv[])
 {
   // ROS 2 node
   rclcpp::init(argc, argv);
-  auto ros2_node_ptr = rclcpp::Node::make_shared("ros_bridge");
+  auto ros2_node_ptr = rclcpp::Node::make_shared("bridge");
 
   // Find local end ip
   std::string ip = find_local_end_ip();
