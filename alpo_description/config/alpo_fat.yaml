@@ -16,7 +16,7 @@ geometry:
       hub_carrier_offset: 0.02
   aabb:
     length: 2.6
-    width: 1.68
+    width: 1.72
     height: 1.5
     center: [0., 0., 1.2]
   ground_clearance: 0.15

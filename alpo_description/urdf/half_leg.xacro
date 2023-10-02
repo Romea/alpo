@@ -17,5 +17,7 @@
             <parent link="${prefix}base_link" />
             <child link="${prefix}half_leg_${side}_link" />
         </joint>
+
+        <xacro:pom_gazebo_material link="${prefix}half_leg_${side}_link" />
     </xacro:macro>
 </robot>
