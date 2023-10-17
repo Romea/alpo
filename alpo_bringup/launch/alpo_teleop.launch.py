@@ -68,8 +68,8 @@ def launch_setup(context, *args, **kwargs):
     )
 
     teleop = Node(
-        package="alpo_teleop",
-        executable="alpo_teleop_node",
+        package="romea_teleop_drivers",
+        executable="one_axle_steering_teleop_node",
         name="teleop",
         parameters=[teleop_configuration],
         output="screen",
