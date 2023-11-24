@@ -1,13 +1,13 @@
 <library path="alpo_hardware">
   <class name="alpo_hardware/AlpoHardware2FWS4WD"
-         type="romea::AlpoHardware2FWS4WD"
+         type="romea::ros2::AlpoHardware2FWS4WD"
          base_class_type="hardware_interface::SystemInterface">
     <description>
       Hardware interface for 2FWS4WD Alpo robots
     </description>
   </class>
   <class name="alpo_hardware/AlpoHardware2FWS2RWD"
-         type="romea::AlpoHardware2FWS2RWD"
+         type="romea::ros2::AlpoHardware2FWS2RWD"
          base_class_type="hardware_interface::SystemInterface">
     <description>
       Hardware interface for 2FWS2RWD Alpo robots

@@ -33,6 +33,8 @@
 
 namespace romea
 {
+namespace ros2
+{
 
 template<typename HardwareInterface>
 class AlpoHardware : public HardwareSystemInterface<HardwareInterface>
@@ -116,6 +118,7 @@ private:
 using AlpoHardware2FWS4WD = AlpoHardware<HardwareInterface2FWS4WD>;
 using AlpoHardware2FWS2RWD = AlpoHardware<HardwareInterface2FWS2RWD>;
 
+}  // namespace ros2
 }  // namespace romea
 
 #endif  // ALPO_HARDWARE__ALPO_HARDWARE_HPP_

@@ -64,6 +64,8 @@ const double & velocity(
 
 namespace romea
 {
+namespace ros2
+{
 
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
@@ -189,7 +191,7 @@ void AlpoHardware<HardwareInterface>::send_command_()
     (rear_left_wheel_angular_speed_command_ +
     rear_right_wheel_angular_speed_command_);
 
-  cmd.steering_angle = romea::TwoWheelSteeringKinematic::
+  cmd.steering_angle = core::TwoWheelSteeringKinematic::
     computeSteeringAngle(
     front_left_wheel_steering_angle_command_,
     front_right_wheel_steering_angle_command_,
@@ -294,7 +296,7 @@ void AlpoHardware<HardwareInterface2FWS2RWD>::joint_states_callback_(
 template<>
 void AlpoHardware<HardwareInterface2FWS2RWD>::set_hardware_state_()
 {
-  HardwareState2FWS2RWD state;
+  core::HardwareState2FWS2RWD state;
   state.frontLeftWheelSteeringAngle = front_left_wheel_steering_angle_measure_;
   state.frontRightWheelSteeringAngle = front_right_wheel_steering_angle_measure_;
   state.rearLeftWheelSpinningMotion.velocity = front_left_wheel_angular_speed_measure_;
@@ -306,7 +308,7 @@ void AlpoHardware<HardwareInterface2FWS2RWD>::set_hardware_state_()
 template<>
 void AlpoHardware<HardwareInterface2FWS4WD>::set_hardware_state_()
 {
-  HardwareState2FWS4WD state;
+  core::HardwareState2FWS4WD state;
   state.frontLeftWheelSteeringAngle = front_left_wheel_steering_angle_measure_;
   state.frontRightWheelSteeringAngle = front_right_wheel_steering_angle_measure_;
   state.frontLeftWheelSpinningMotion.velocity = front_left_wheel_angular_speed_measure_;
@@ -320,7 +322,7 @@ void AlpoHardware<HardwareInterface2FWS4WD>::set_hardware_state_()
 template<>
 void AlpoHardware<HardwareInterface2FWS2RWD>::get_hardware_command_()
 {
-  HardwareCommand2FWS2RWD command = hardware_interface_->get_command();
+  core::HardwareCommand2FWS2RWD command = hardware_interface_->get_command();
 
   front_left_wheel_steering_angle_command_ = command.frontLeftWheelSteeringAngle;
   front_right_wheel_steering_angle_command_ = command.frontRightWheelSteeringAngle;
@@ -332,7 +334,7 @@ void AlpoHardware<HardwareInterface2FWS2RWD>::get_hardware_command_()
 template<>
 void AlpoHardware<HardwareInterface2FWS4WD>::get_hardware_command_()
 {
-  HardwareCommand2FWS4WD command = hardware_interface_->get_command();
+  core::HardwareCommand2FWS4WD command = hardware_interface_->get_command();
   front_left_wheel_steering_angle_command_ = command.frontLeftWheelSteeringAngle;
   front_right_wheel_steering_angle_command_ = command.frontRightWheelSteeringAngle;
   front_left_wheel_angular_speed_command_ = command.frontLeftWheelSpinningSetPoint;
@@ -394,9 +396,10 @@ void AlpoHardware<HardwareInterface>::write_log_data_()
 template class AlpoHardware<HardwareInterface2FWS4WD>;
 template class AlpoHardware<HardwareInterface2FWS2RWD>;
 
+}  // namespace ros2
 }  // namespace romea
 
 
 #include "pluginlib/class_list_macros.hpp"
-PLUGINLIB_EXPORT_CLASS(romea::AlpoHardware2FWS4WD, hardware_interface::SystemInterface)
-PLUGINLIB_EXPORT_CLASS(romea::AlpoHardware2FWS2RWD, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(romea::ros2::AlpoHardware2FWS4WD, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(romea::ros2::AlpoHardware2FWS2RWD, hardware_interface::SystemInterface)
