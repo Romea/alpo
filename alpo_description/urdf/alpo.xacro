@@ -114,8 +114,6 @@
          value="${props['geometry']['front_axle']['wheels']['width']}" />
       <xacro:property name="rear_wheel_width"
          value="${props['geometry']['rear_axle']['wheels']['width']}" />
-      <xacro:property name="wheel_radius" value="${front_wheel_radius}" />
-      <xacro:property name="wheel_width" value="${front_wheel_width}" />
 
       <xacro:property name="minimal_wheel_steering_angle"
          value="-${props['front_wheels_steering_control']['command']['maximal_angle']}" />
@@ -132,7 +130,7 @@
             value="${props['rear_wheels_speed_control']['command']['maximal_speed']}" />
       </xacro:if>
 
-      <xacro:property name="wheel_mass" value="5" />
+      <!-- <xacro:property name="wheel_mass" value="5" /> -->
       <xacro:property name="front_wheel_mass" value="5" />
       <xacro:property name="rear_wheel_mass" value="5" />
       <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
@@ -167,17 +165,17 @@
                   <xacro:if value="${model == 'slim'}">
                      <mesh filename="package://alpo_description/meshes/pom_slim.obj" />
                   </xacro:if>
-
-                  <!-- <mesh filename="package://alpo_description/meshes/chassis.dae"
-                     scale="${mesh_scale_x} 1.0 1.0" /> -->
                </geometry>
             </xacro:if>
             <xacro:beige />
          </visual>
          <!-- visual front steering -->
          <box size="${steering_link_xz_size} ${steering_link_y_size} ${steering_link_xz_size}" />
-         <!-- visual wheel -->
-         <cylinder length="${wheel_width}" radius="${wheel_radius}" />
+         <!-- visual front wheel -->
+         <cylinder length="${front_wheel_width}" radius="${front_wheel_radius}" />
+         <!-- visual rear wheel -->
+         <cylinder length="${rear_wheel_width}" radius="${rear_wheel_radius}" />
+
       </xacro:chassis>
 
       <xacro:if value="${mesh == True}">
@@ -190,10 +188,6 @@
       </xacro:if>
 
       <xacro:pom_gazebo_material link="${prefix}${base_link}" />
-
-      <!-- <xacro:if value="${mode == 'simulation' or mode == 'live'}">
-         <xacro:base_control mode="${mode}" />
-      </xacro:if> -->
 
    </xacro:macro>
 
