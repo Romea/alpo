@@ -299,8 +299,8 @@ void AlpoHardware<HardwareInterface2FWS2RWD>::set_hardware_state_()
   core::HardwareState2FWS2RWD state;
   state.frontLeftWheelSteeringAngle = front_left_wheel_steering_angle_measure_;
   state.frontRightWheelSteeringAngle = front_right_wheel_steering_angle_measure_;
-  state.rearLeftWheelSpinningMotion.velocity = front_left_wheel_angular_speed_measure_;
-  state.rearRightWheelSpinningMotion.velocity = front_right_wheel_angular_speed_measure_;
+  state.rearLeftWheelSpinningMotion.velocity = rear_left_wheel_angular_speed_measure_;
+  state.rearRightWheelSpinningMotion.velocity = rear_right_wheel_angular_speed_measure_;
   this->hardware_interface_->set_state(state);
 }
 
@@ -313,8 +313,8 @@ void AlpoHardware<HardwareInterface2FWS4WD>::set_hardware_state_()
   state.frontRightWheelSteeringAngle = front_right_wheel_steering_angle_measure_;
   state.frontLeftWheelSpinningMotion.velocity = front_left_wheel_angular_speed_measure_;
   state.frontRightWheelSpinningMotion.velocity = front_right_wheel_angular_speed_measure_;
-  state.rearLeftWheelSpinningMotion.velocity = front_left_wheel_angular_speed_measure_;
-  state.rearRightWheelSpinningMotion.velocity = front_right_wheel_angular_speed_measure_;
+  state.rearLeftWheelSpinningMotion.velocity = rear_left_wheel_angular_speed_measure_;
+  state.rearRightWheelSpinningMotion.velocity = rear_right_wheel_angular_speed_measure_;
   this->hardware_interface_->set_state(state);
 }
 
