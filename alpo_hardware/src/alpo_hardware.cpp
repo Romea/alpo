@@ -70,7 +70,7 @@ namespace ros2
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
 AlpoHardware<HardwareInterface>::AlpoHardware()
-: HardwareSystemInterface<HardwareInterface>(),
+: HardwareSystemInterface<HardwareInterface>("AlpoHardware"),
   front_wheel_radius_(0),
   rear_wheel_radius_(0),
   front_left_wheel_steering_angle_measure_(0),
@@ -96,18 +96,18 @@ AlpoHardware<HardwareInterface>::AlpoHardware()
   open_log_file_();
   write_log_header_();
 #endif
-
-
-  // node_ = rclcpp::Node::make_shared("alpo_hardware");
-  // auto callback = std::bind(
-  //   &AlpoHardware<HardwareInterface>::joint_states_callback_, this,
-  //   std::placeholders::_1);
-  // cmd_steer_pub_ = node_->create_publisher<ackermann_msgs::msg::AckermannDrive>(
-  //   "/alpo_bridge/vehicle_controller/cmd_steer", sensor_data_qos());
-  // joint_states_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
-  //   "/alpo_bridge/vehicle_controller/joint_states", best_effort(1), callback);
 }
 
+
+//-----------------------------------------------------------------------------
+template<typename HardwareInterface>
+AlpoHardware<HardwareInterface>::~AlpoHardware()
+{
+  // force deactive when interface has not been deactivated by controller manager but by ctrl-c
+  if (this->lifecycle_state_.id() == 3) {
+    this->on_deactivate(this->lifecycle_state_);
+  }
+}
 
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
