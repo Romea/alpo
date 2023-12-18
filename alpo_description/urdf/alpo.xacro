@@ -57,12 +57,18 @@
       <xacro:property name="mesh" value="True" />
 
       <!-- Base Properties -->
-      <xacro:property name="aabb_length" value="${props['geometry']['aabb']['length']}" />
-      <xacro:property name="aabb_width" value="${props['geometry']['aabb']['width']}" />
-      <xacro:property name="aabb_height" value="${props['geometry']['aabb']['height']}" />
-      <xacro:property name="aabb_center_x" value="${props['geometry']['aabb']['center'][0]}" />
-      <xacro:property name="aabb_center_y" value="${props['geometry']['aabb']['center'][1]}" />
-      <xacro:property name="aabb_center_z" value="${props['geometry']['aabb']['center'][2]}" />
+      <xacro:property name="aabb_length" 
+         value="${props['geometry']['aabb']['length']}" />
+      <xacro:property name="aabb_width" 
+         value="${props['geometry']['aabb']['width']}" />
+      <xacro:property name="aabb_height" 
+         value="${props['geometry']['aabb']['height']}" />
+      <xacro:property name="aabb_center_x" 
+         value="${props['geometry']['aabb']['center'][0]}" />
+      <xacro:property name="aabb_center_y" 
+         value="${props['geometry']['aabb']['center'][1]}" />
+      <xacro:property name="aabb_center_z" 
+         value="${props['geometry']['aabb']['center'][2]}" />
 
       <xacro:property name="wheelbase"
          value="${props['geometry']['axles_distance']}" />
@@ -73,33 +79,22 @@
       <xacro:property name="track"
          value="${front_track}" />
 
-      <xacro:property name="ground_clearance" value="${chassis_props['ground_clearance']}" />
+      <xacro:property name="mass_body" 
+         value="${props['inertia']['mass']}" />
+      <xacro:property name="mass_base" 
+         value="${props['inertia']['mass']}" />
+      <xacro:property name="mass_center_x" 
+         value="${props['inertia']['center'][0]}" />
+      <xacro:property name="mass_center_y" 
+         value="${props['inertia']['center'][1]}" />
+      <xacro:property name="mass_center_z" 
+         value="${props['inertia']['center'][2]}" />
 
-      <xacro:property name="mass_body" value="${props['inertia']['mass']}" />
-      <xacro:property name="mass_base" value="${props['inertia']['mass']}" />
-      <xacro:property name="mass_center_x" value="${props['inertia']['center'][0]}" />
-      <xacro:property name="mass_center_y" value="${props['inertia']['center'][1]}" />
-      <xacro:property name="mass_center_z" value="${props['inertia']['center'][2]}" />
+      <xacro:property name="ground_clearance" 
+         value="${props['geometry']['ground_clearance']}" />
+      <xacro:property name="body_reference_x" 
+         value="${props['control_point'][0]}" />
 
-      <xacro:property name="ground_clearance" value="${props['geometry']['ground_clearance']}" />
-      <xacro:property name="body_reference_x" value="${props['control_point'][0]}" />
-
-
-      <!-- Steering Properties -->
-      <xacro:property name="steering_angle_max_in" value="1.04" />
-      <xacro:property name="steering_angle_max_out" value="0.59" />
-
-      <xacro:property name="front_wheel_y_offset"
-         value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
-      <xacro:property name="rear_wheel_y_offset"
-         value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
-      <xacro:property name="wheel_y_offset" value="${front_wheel_y_offset}" />
-
-      <xacro:property name="steering_link_mass" value="1" />
-      <xacro:property name="steering_link_y_size" value="${wheel_y_offset}" />
-      <xacro:property name="steering_link_xz_size" value="0.1" />
-      <xacro:property name="steering_link_y" value="${wheel_y_offset}" />
-      <xacro:property name="steering_link_xz" value="0.1" />
 
       <!-- Wheel Properties -->
       <xacro:property name="front_hub_carrier_offset"
@@ -114,11 +109,8 @@
          value="${props['geometry']['front_axle']['wheels']['width']}" />
       <xacro:property name="rear_wheel_width"
          value="${props['geometry']['rear_axle']['wheels']['width']}" />
-
-      <xacro:property name="minimal_wheel_steering_angle"
-         value="-${props['front_wheels_steering_control']['command']['maximal_angle']}" />
-      <xacro:property name="maximal_wheel_steering_angle"
-         value="${props['front_wheels_steering_control']['command']['maximal_angle']}" />
+      <xacro:property name="chassis_height" 
+         value="${min(front_wheel_radius,rear_wheel_radius)}" />
 
       <xacro:if value="${model == 'fat'}">
          <xacro:property name="maximal_wheel_speed"
@@ -130,20 +122,18 @@
             value="${props['rear_wheels_speed_control']['command']['maximal_speed']}" />
       </xacro:if>
 
-      <!-- <xacro:property name="wheel_mass" value="5" /> -->
       <xacro:property name="front_wheel_mass" value="5" />
       <xacro:property name="rear_wheel_mass" value="5" />
-      <xacro:property name="chassis_height" value="${min(front_wheel_radius,rear_wheel_radius)}" />
 
-      <!-- Mesh scale -->
-      <!-- <xacro:if value="${model == 'fat' and mesh == True}">
-         <xacro:property name="mesh_scale_x" value="1.0" />
-      </xacro:if>
+      <!-- Steering Properties -->
+      <xacro:property name="minimal_wheel_steering_angle"
+         value="-${props['front_wheels_steering_control']['command']['maximal_angle']}" />
+      <xacro:property name="maximal_wheel_steering_angle"
+         value="${props['front_wheels_steering_control']['command']['maximal_angle']}" />
 
-      <xacro:if value="${model == 'slim' and mesh == True}">
-         <xacro:property name="mesh_scale_x" value="0.7" />
-      </xacro:if> -->
-
+      <xacro:property name="front_wheel_steering_link_mass" value="1" />
+      <xacro:property name="front_wheel_steering_link_y" value="${front_hub_carrier_offset}" />
+      <xacro:property name="front_wheel_steering_link_xz" value="0.05" />
 
       <xacro:chassis>
          <!-- visual chassis -->
@@ -170,7 +160,7 @@
             <xacro:beige />
          </visual>
          <!-- visual front steering -->
-         <box size="${steering_link_xz_size} ${steering_link_y_size} ${steering_link_xz_size}" />
+         <box size="${front_wheel_steering_link_xz} ${front_wheel_steering_link_y} ${front_wheel_steering_link_xz}" />
          <!-- visual front wheel -->
          <cylinder length="${front_wheel_width}" radius="${front_wheel_radius}" />
          <!-- visual rear wheel -->
