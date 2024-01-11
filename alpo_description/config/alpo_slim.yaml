@@ -22,20 +22,20 @@ geometry:
   ground_clearance: 0.45
 
 front_wheels_steering_control:
-    command:
-      maximal_angle: 1.04
-      maximal_angular_speed: 0.2433
-    sensor:
-      angle_std: 0.017453
-      angle_range: 0.73
+  command:
+    maximal_angle: 1.04
+    maximal_angular_speed: 0.2433
+  sensor:
+    angle_std: 0.017453
+    angle_range: 0.73
 
 rear_wheels_speed_control:
-    command:
-      maximal_speed: 3.0
-      maximal_acceleration: 1.0
-    sensor:
-      speed_std: 0.1
-      speed_range: 3.0
+  command:
+    maximal_speed: 3.0
+    maximal_acceleration: 1.0
+  sensor:
+    speed_std: 0.1
+    speed_range: 3.0
 
 inertia:
   mass: 800.
@@ -64,4 +64,3 @@ links:
   front_right_wheel_spinning_link_name: front_right_wheel_spinning_link
   rear_left_wheel_spinning_link_name: rear_left_wheel_spinning_link
   rear_right_wheel_spinning_link_name: rear_right_wheel_spinning_link
-
