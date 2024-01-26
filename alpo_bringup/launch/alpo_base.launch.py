@@ -21,9 +21,8 @@ from launch.actions import (
     OpaqueFunction,
     GroupAction,
 )
-from launch.conditions import LaunchConfigurationEquals, LaunchConfigurationNotEquals
-
-from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
+from launch.conditions import IfCondition, LaunchConfigurationEquals
+from launch.substitutions import PathJoinSubstitution, LaunchConfiguration, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node, SetParameter, PushRosNamespace
 from launch_ros.substitutions import FindPackageShare
@@ -33,6 +32,13 @@ from ament_index_python.packages import get_package_share_directory
 def launch_setup(context, *args, **kwargs):
 
     mode = LaunchConfiguration("mode").perform(context)
+
+    if "replay" in mode:
+        return []
+
+    if mode == "simulation":
+        mode += "_gazebo_classic"
+
     base_name = LaunchConfiguration("base_name").perform(context)
     robot_model = LaunchConfiguration("robot_model").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
@@ -72,7 +78,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     controller_manager = Node(
-        condition=LaunchConfigurationEquals("mode", "live"),
+        condition=IfCondition(PythonExpression(["'gazebo' not in '", mode, "'"])),
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[
@@ -101,11 +107,9 @@ def launch_setup(context, *args, **kwargs):
             "base_description_yaml_filename": base_description_yaml_file,
             "base_controller_yaml_filename": base_controller_yaml_file,
         }.items(),
-        condition=LaunchConfigurationNotEquals("mode", "replay"),
     )
 
     cmd_mux = Node(
-        condition=LaunchConfigurationNotEquals("mode", "replay"),
         package="romea_cmd_mux",
         executable="cmd_mux_node",
         name="cmd_mux",

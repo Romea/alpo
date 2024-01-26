@@ -68,18 +68,42 @@
     </xacro:if>
 
     <!-- simulation plugins -->
-    <xacro:if value="${model == 'fat'}">
-      <xacro:property name="simulation_hardware_plugin"
-        value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD" />
-      <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS4WD" />
+    <xacro:if value="${'simulation' in mode}">
+      <xacro:if value="${'gazebo' in  mode}">
+        <xacro:if value="${model == 'fat'}">
+          <xacro:property
+            name="simulation_hardware_plugin"
+            value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD" />
+        </xacro:if>
+        <xacro:if value="${model == 'slim'}">
+          <xacro:property
+            name="simulation_hardware_plugin"
+            value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD" />
+        </xacro:if>
+      </xacro:if>
+
+      <xacro:if value="${'4dv' in  mode or 'isaac' in mode}">
+        <xacro:if value="${model == 'fat'}">
+          <xacro:property
+            name="simulation_hardware_plugin"
+            value="romea_mobile_base_simulation/GenericSimulationSystemInterface2FWS4WD" />
+        </xacro:if>
+        <xacro:if value="${model == 'slim'}">
+          <xacro:property
+            name="simulation_hardware_plugin"
+            value="romea_mobile_base_simulation/GenericSimulationSystemInterface2FWS2RWD" />
+        </xacro:if>
+      </xacro:if>
     </xacro:if>
 
-    <xacro:if value="${model == 'slim'}">
-      <xacro:property name="simulation_hardware_plugin"
-        value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD" />
-      <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD" />
+    <xacro:if value="${mode ==  'live'}">
+      <xacro:if value="${model == 'fat'}">
+        <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS4WD" />
+      </xacro:if>
+      <xacro:if value="${model == 'slim'}">
+        <xacro:property name="live_hardware_plugin" value="alpo_hardware/AlpoHardware2FWS2RWD" />
+      </xacro:if>
     </xacro:if>
-
 
     <xacro:base_control mode="${mode}" base_name="${base_name}" />
 

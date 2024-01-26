@@ -40,6 +40,9 @@ def launch_setup(context, *args, **kwargs):
     robot = []
 
     if mode == "simulation":
+        mode += "_gazebo_classic"
+
+    if mode == "simulation_gazebo_classic":
 
         world = PathJoinSubstitution(
             [
