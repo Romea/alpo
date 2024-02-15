@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="chassis">
+
+    <xacro:macro name="chassis_visual">
+        <visual>
+            <xacro:if value="${mesh == False}">
+                <origin
+                    xyz="${aabb_center_x-body_reference_x} ${aabb_center_y}  ${aabb_center_z-chassis_height}"
+                    rpy="0 0 0" />
+                <geometry>
+                    <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
+                </geometry>
+            </xacro:if>
+            <xacro:if value="${mesh == True}">
+                <origin xyz="0 0 0" rpy="0 0 ${-pi/2}" />
+                <geometry>
+                    <xacro:if value="${model == 'fat'}">
+                        <mesh filename="package://alpo_description/meshes/pom_4x4.obj" />
+                    </xacro:if>
+                    <xacro:if value="${model == 'slim'}">
+                        <mesh filename="package://alpo_description/meshes/pom_slim.obj" />
+                    </xacro:if>
+                </geometry>
+            </xacro:if>
+            <xacro:beige />
+        </visual>
+    </xacro:macro>
+
+
+</robot>

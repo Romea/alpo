@@ -3,9 +3,6 @@
 
    <xacro:macro name="alpo" params="model mode prefix">
 
-      <xacro:include filename="$(find alpo_description)/urdf/color.xacro" />
-      <xacro:include filename="$(find alpo_description)/urdf/half_leg.xacro" />
-
       <xacro:if value="${model == 'fat'}">
          <xacro:include
             filename="$(find romea_mobile_base_description)/urdf/base2FWSxxx.chassis.xacro" />
@@ -16,14 +13,22 @@
             filename="$(find romea_mobile_base_description)/urdf/base2FWSxxx.chassis.xacro" />
       </xacro:if>
 
+      <xacro:include filename="$(find alpo_description)/urdf/visual/color.xacro" />
+      <xacro:include filename="$(find alpo_description)/urdf/visual/half_leg.xacro" />
+      <xacro:include filename="$(find alpo_description)/urdf/visual/chassis.xacro" />
+      <xacro:include filename="$(find alpo_description)/urdf/visual/wheels.xacro" />
+      <xacro:include filename="$(find alpo_description)/urdf/visual/arms.xacro" />
+
       <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
       <xacro:property name="props" value="${load_yaml(conf)}" />
 
       <!-- Link names -->
-      <xacro:property name="base_link" value="${props['links']['base_link_name']}" />
+      <xacro:property name="base_link"
+         value="${props['links']['base_link_name']}" />
       <xacro:property name="base_footprint_link"
          value="${props['links']['base_footprint_link_name']}" />
-      <xacro:property name="inertial_link" value="${props['links']['inertial_link_name']}" />
+      <xacro:property name="inertial_link"
+         value="${props['links']['inertial_link_name']}" />
       <xacro:property name="front_left_wheel_steering_link"
          value="${props['links']['front_left_wheel_steering_link_name']}" />
       <xacro:property name="front_right_wheel_steering_link"
@@ -97,6 +102,7 @@
 
 
       <!-- Wheel Properties -->
+      <xacro:property name="front_wheel_x_offset" value="0.0" />
       <xacro:property name="front_hub_carrier_offset"
          value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
       <xacro:property name="rear_hub_carrier_offset"
@@ -136,37 +142,13 @@
       <xacro:property name="front_wheel_steering_link_xz" value="0.05" />
 
       <xacro:chassis>
-         <!-- visual chassis -->
-         <visual>
-            <xacro:if value="${mesh == False}">
-               <origin
-                  xyz="${aabb_center_x-body_reference_x} ${aabb_center_y}  ${aabb_center_z-chassis_height}"
-                  rpy="0 0 0" />
-               <geometry>
-                  <box size="${aabb_length} ${aabb_width} ${aabb_height}" />
-               </geometry>
-            </xacro:if>
-            <xacro:if value="${mesh == True}">
-               <origin xyz="0 0 0" rpy="0 0 ${-pi/2}" />
-               <geometry>
-                  <xacro:if value="${model == 'fat'}">
-                     <mesh filename="package://alpo_description/meshes/pom_4x4.obj" />
-                  </xacro:if>
-                  <xacro:if value="${model == 'slim'}">
-                     <mesh filename="package://alpo_description/meshes/pom_slim.obj" />
-                  </xacro:if>
-               </geometry>
-            </xacro:if>
-            <xacro:beige />
-         </visual>
-         <!-- visual front steering -->
-         <box
-            size="${front_wheel_steering_link_xz} ${front_wheel_steering_link_y} ${front_wheel_steering_link_xz}" />
-         <!-- visual front wheel -->
-         <cylinder length="${front_wheel_width}" radius="${front_wheel_radius}" />
-         <!-- visual rear wheel -->
-         <cylinder length="${rear_wheel_width}" radius="${rear_wheel_radius}" />
-
+         <xacro:chassis_visual />
+         <xacro:front_left_arm_visual />
+         <xacro:front_right_arm_visual />
+         <xacro:front_left_wheel_visual />
+         <xacro:front_right_wheel_visual />
+         <xacro:rear_left_wheel_visual />
+         <xacro:rear_right_wheel_visual />
       </xacro:chassis>
 
       <xacro:if value="${mesh == True}">
