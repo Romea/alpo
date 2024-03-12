@@ -1,20 +1,19 @@
 # 1 Overview #
 
-This package contains the description of fat and slim alpo robots
+This package contains the description of fat and slim alpo robots and to display them
 
 # 2 Package organization #
 
 This package is organized into subdirectories as follows:
 
-  - urdf/ contains (xacro representations of) urdf descriptions of fat and slim alpo robots.
+  - urdf/ contains xacro representations of fat and slim alpo robots.
 
-  - config/ contains characteristic of each robot:
+  - ros2_control/ contains urdf configuration for ros2 controller
+   
+  - config/ contains characteristics of each robot and teleop configuration 
 
-    - chassis
-    - kinematic
-    - odometry
-    - joints and links names
+  - meshes/ contains meshes of chassis
 
-   - meshes/ constains meshes of chassis
+  - launch/ contains scripts to display robots and test joints
 
-   - launch/ contains scripts to display robots and test joints
+  - python/ contains a python module able to create urdf for each robot
