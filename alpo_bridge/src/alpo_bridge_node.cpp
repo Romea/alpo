@@ -12,18 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+#include <arpa/inet.h>
 #include <ifaddrs.h>
 #include <net/if.h>
-#include <arpa/inet.h>
 
 // std
-#include <string>
 #include <memory>
+#include <string>
 
 //
 #include "alpo_bridge.hpp"
-
 
 namespace
 {
@@ -38,11 +36,14 @@ std::string find_local_end_ip()
   if (getifaddrs(&addrs) != -1) {
     for (auto addr = addrs; addr != NULL; addr = addr->ifa_next) {
       // No address? Skip.
-      if (addr->ifa_addr == nullptr) {continue;}
+      if (addr->ifa_addr == nullptr) {
+        continue;
+      }
 
       // Interface isn't active? Skip.
-      if (!(addr->ifa_flags & IFF_UP)) {continue;}
-
+      if (!(addr->ifa_flags & IFF_UP)) {
+        continue;
+      }
 
       if (addr->ifa_addr->sa_family == AF_INET) {
         std::string ip = inet_ntoa(reinterpret_cast<sockaddr_in *>(addr->ifa_addr)->sin_addr);
@@ -65,20 +66,27 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   auto ros2_node_ptr = rclcpp::Node::make_shared("bridge");
 
-  // Find local end ip
-  std::string ip = find_local_end_ip();
-  if (ip.empty()) {
-    RCLCPP_FATAL(
-      ros2_node_ptr->get_logger(),
-      "No ethernet connection with alpo robot!, Alpo bridge failed");
-    return 1;
+  ros2_node_ptr->declare_parameter("override_ros1_master", true);
+  auto override_param = ros2_node_ptr->get_parameter("override_ros1_master");
+  bool override_ros1_master = override_param.get_value<bool>();
+  // RCLCPP_INFO_STREAM(ros2_node_ptr->get_logger(), "override_ros1_master: " << override_ros1_master);
+
+  ros::M_string remappings;
+
+  if (override_ros1_master) {
+    std::string ip = find_local_end_ip();
+    if (ip.empty()) {
+      RCLCPP_FATAL(
+        ros2_node_ptr->get_logger(), "No ethernet connection with alpo robot!, Alpo bridge failed");
+      return 1;
+    }
+
+    remappings["__ip"] = ip;
+    remappings["__master"] = master;
   }
 
-  // ROS 1 node
-  ros::M_string remappings;
-  remappings["__ip"] = ip;
-  remappings["__master"] = master;
   ros::init(remappings, "alpo_bridge");
+
   auto ros1_node_ptr = std::make_shared<ros::NodeHandle>();
 
   // ROS 1 asynchronous spinner
