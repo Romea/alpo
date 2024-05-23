@@ -48,6 +48,8 @@ void AlpoBridge::ros2_cmd_steer_callback_(const Ros2AckermannMsg::SharedPtr ros2
   ros1_msg.steering_angle = ros2_msg->steering_angle;
   ros1_msg.steering_angle_velocity = ros2_msg->steering_angle_velocity;
   ros1_cmd_steer_pub_.publish(ros1_msg);
+
+  RCLCPP_INFO(ros2_node_ptr_->get_logger(), "publish 2 -> 1: cmd_steer");
 }
 
 //-----------------------------------------------------------------------------
@@ -117,6 +119,19 @@ void AlpoBridge::start()
   init_ros2_publishers_();
   init_ros1_subscriptions_();
   init_ros2_subcription_();
+
+  RCLCPP_INFO_STREAM(
+    ros2_node_ptr_->get_logger(),
+    "Create sub 2 -> 1: " << bridge_cmd_steer_topic << " -> " << alpo_cmd_steer_topic);
+  RCLCPP_INFO_STREAM(
+    ros2_node_ptr_->get_logger(),
+    "Create pub 2 <- 1: " << bridge_joy_topic << " -> " << alpo_joy_topic);
+  RCLCPP_INFO_STREAM(
+    ros2_node_ptr_->get_logger(),
+    "Create pub 2 <- 1: " << bridge_odom_topic << " -> " << alpo_odom_topic);
+  RCLCPP_INFO_STREAM(
+    ros2_node_ptr_->get_logger(),
+    "Create pub 2 <- 1: " << bridge_joint_states_topic << " -> " << alpo_joint_states_topic);
 }
 
 //-----------------------------------------------------------------------------
