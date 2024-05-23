@@ -48,8 +48,6 @@ void AlpoBridge::ros2_cmd_steer_callback_(const Ros2AckermannMsg::SharedPtr ros2
   ros1_msg.steering_angle = ros2_msg->steering_angle;
   ros1_msg.steering_angle_velocity = ros2_msg->steering_angle_velocity;
   ros1_cmd_steer_pub_.publish(ros1_msg);
-
-  RCLCPP_INFO(ros2_node_ptr_->get_logger(), "publish 2 -> 1: cmd_steer");
 }
 
 //-----------------------------------------------------------------------------

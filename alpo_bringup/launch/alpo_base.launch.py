@@ -70,12 +70,12 @@ def launch_setup(context, *args, **kwargs):
     with open(base_ros2_control_description_file, "r") as f:
         base_ros2_control_description = f.read()
 
-    alpo_bridge = Node(
-        condition=LaunchConfigurationEquals("mode", "live"),
-        package="alpo_bridge",
-        executable="alpo_bridge",
-        output="screen",
-    )
+    # alpo_bridge = Node(
+    #     condition=LaunchConfigurationEquals("mode", "live"),
+    #     package="alpo_bridge",
+    #     executable="alpo_bridge",
+    #     output="screen",
+    # )
 
     controller_manager = Node(
         condition=IfCondition(PythonExpression(["'gazebo' not in '", mode, "'"])),
@@ -124,7 +124,7 @@ def launch_setup(context, *args, **kwargs):
                 SetParameter(name="use_sim_time", value=(mode != "live")),
                 PushRosNamespace(robot_namespace),
                 PushRosNamespace(base_name),
-                alpo_bridge,
+                # alpo_bridge,
                 controller_manager,
                 controller,
                 cmd_mux,
