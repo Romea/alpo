@@ -163,19 +163,20 @@ AlpoHardware<HardwareInterface>::on_init(const hardware_interface::HardwareInfo 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
   }
 
+  std::string ns = "_" + hardware_info.name;
+  std::replace(ns.begin(), ns.end(), '_', '/');
+  std::cout << " hardware node_name " << ns << std::endl;
+  node_ = rclcpp::Node::make_shared("hardware", ns);
+
   if (this->load_info_(hardware_info) == hardware_interface::return_type::OK &&
     this->load_interface_(hardware_info) == hardware_interface::return_type::OK)
   {
-    std::string ns = "_" + hardware_info.name;
-    std::replace(ns.begin(), ns.end(), '_', '/');
-    std::cout << " hardware node_name " << ns << std::endl;
-    node_ = rclcpp::Node::make_shared("hardware", ns);
 
     auto callback = std::bind(
       &AlpoHardware<HardwareInterface>::joint_states_callback_, this, std::placeholders::_1);
 
     cmd_steer_pub_ = node_->create_publisher<ackermann_msgs::msg::AckermannDrive>(
-      ns + "/bridge/cmd_steer", sensor_data_qos());
+      ns + "/bridge/vehicle_controller/cmd_steer", sensor_data_qos());
     joint_states_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
       ns + "/bridge/vehicle_controller/joint_states", best_effort(1), callback);
 
