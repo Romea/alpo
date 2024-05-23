@@ -20,10 +20,10 @@ const char alpo_odom_topic[] = "/alpo_driver/ackermann_controller/odom";
 const char alpo_cmd_steer_topic[] = "/auto/cmd_steer";
 const char alpo_joint_states_topic[] = "/alpo_driver/joint_states";
 
-const char bridge_joy_topic[] = "~joy";
-const char bridge_odom_topic[] = "~vehicle_controller/odom";
-const char bridge_cmd_steer_topic[] = "~vehicle_controller/cmd_steer";
-const char bridge_joint_states_topic[] = "~vehicle_controller/joint_states";
+const char bridge_joy_topic[] = "~/joy";
+const char bridge_odom_topic[] = "~/vehicle_controller/odom";
+const char bridge_cmd_steer_topic[] = "~/vehicle_controller/cmd_steer";
+const char bridge_joint_states_topic[] = "~/vehicle_controller/joint_states";
 
 const rclcpp::QoS data_qos = rclcpp::SensorDataQoS().reliable();
 const rclcpp::QoS cmd_qos = rclcpp::QoS(rclcpp::KeepLast(1)).
