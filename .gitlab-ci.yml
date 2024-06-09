@@ -49,5 +49,5 @@ docker_bridge_build:
   services:
     - docker:dind
   script:
-    - cd ${CI_PROJECT_DIR}/workspace/alpo_bridge/docker
+    - cd ${CI_PROJECT_DIR}/alpo_bridge/docker
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
