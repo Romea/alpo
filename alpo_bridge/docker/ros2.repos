@@ -1,0 +1,5 @@
+repositories:
+  src/alpo:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/alpo.git
+    version: override_master
