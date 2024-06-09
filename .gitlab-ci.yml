@@ -44,11 +44,11 @@
 
 # docker bridge
 docker_bridge_build:
-  image: docker:20.10.16
-  services:
-    - docker:20.10.16-dind
+  image: docker
   stage: build
+  services:
+    - docker:dind
   script:
     - cd ${CI_PROJECT_DIR}/alpo_bridge/docker
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
-    - docker build -t $CI_REGISTRY/group/project/image:latest .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/group/project/image:latest
