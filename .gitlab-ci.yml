@@ -44,10 +44,9 @@
 
 # docker bridge
 docker_bridge_build:
-  image: $CI_REGISTRY/group/project/docker:20.10.16
+  image: docker:20.10.16
   services:
-    - name: $CI_REGISTRY/group/project/docker:20.10.16-dind
-      alias: docker
+    - docker:20.10.16-dind
   stage: build
   script:
     - cd ${CI_PROJECT_DIR}/alpo_bridge/docker
