@@ -47,7 +47,8 @@ docker_bridge_build:
   image: docker
   stage: build
   services:
-    - docker:dind
+    - docker: dind
+      alias: docker
   script:
     - cd ${CI_PROJECT_DIR}/alpo_bridge/docker
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
