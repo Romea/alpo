@@ -44,9 +44,9 @@
 
 # docker bridge
 docker_bridge_build:
-  image: docker
+  image: $CI_REGISTRY/group/project/docker:20.10.16
   services:
-    - name: dind
+    - name: $CI_REGISTRY/group/project/docker:20.10.16-dind
       alias: docker
   stage: build
   script:
