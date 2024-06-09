@@ -41,3 +41,12 @@ humble_jammy_build:
     - source install/setup.bash
     - colcon test --packages-select alpo_bringup alpo_description alpo_hardware
     - colcon test-result --verbose
+
+# docker bridge
+docker_bridge_build:
+  image: docker
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
