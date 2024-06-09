@@ -50,5 +50,6 @@ docker_bridge_build:
     - docker:dind
   script:
     - cd ${CI_PROJECT_DIR}/alpo_bridge/docker
+    - unset DOCKER_HOST
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/group/project/image:latest .
