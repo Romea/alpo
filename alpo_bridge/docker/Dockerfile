@@ -50,7 +50,7 @@ WORKDIR /ros2_ws
 COPY ./ros2.repos ros2.repos
 COPY ./ros_entrypoint_ros1_ros2.sh /ros_entrypoint.sh
 RUN --mount=type=ssh \
-    vcs import -w6 <ros2.repos
+        vcs import -w6 <ros2.repos
 RUN ["/bin/bash", \
     "-c", \
     "source /ros_entrypoint.sh && ROS_VERSION=1 colcon build --symlink-install --packages-up-to alpo_bridge"]
