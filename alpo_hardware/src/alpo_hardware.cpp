@@ -20,7 +20,7 @@
 
 // romea
 #include "romea_common_utils/qos.hpp"
-#include "romea_mobile_base_hardware/hardware_info.hpp"
+#include "romea_mobile_base_utils/ros2_control/info/hardware_info_common.hpp"
 #include "romea_core_mobile_base/kinematic/wheel_steering/TwoWheelSteeringKinematic.hpp"
 
 // local
@@ -137,10 +137,14 @@ hardware_interface::return_type AlpoHardware<HardwareInterface>::load_info_(
   RCLCPP_ERROR_STREAM(node_->get_logger(), "load_info");
 
   try {
-    wheelbase_ = get_parameter<double>(hardware_info, "wheelbase");
-    front_track_ = get_parameter<double>(hardware_info, "front_track");
-    front_wheel_radius_ = get_parameter<float>(hardware_info, "front_wheel_radius");
-    rear_wheel_radius_ = get_parameter<float>(hardware_info, "rear_wheel_radius");
+    // wheelbase_ = get_parameter<double>(hardware_info, "wheelbase");
+    // front_track_ = get_parameter<double>(hardware_info, "front_track");
+    // front_wheel_radius_ = get_parameter<float>(hardware_info, "front_wheel_radius");
+    // rear_wheel_radius_ = get_parameter<float>(hardware_info, "rear_wheel_radius");
+    wheelbase_ = get_wheelbase(hardware_info);
+    front_track_ = get_front_track(hardware_info);
+    front_wheel_radius_ = get_front_wheel_radius(hardware_info);
+    rear_wheel_radius_ = get_rear_wheel_radius(hardware_info);
     return hardware_interface::return_type::OK;
   } catch (std::runtime_error & e) {
     RCLCPP_FATAL_STREAM(node_->get_logger(), e.what());
@@ -301,7 +305,7 @@ void AlpoHardware<HardwareInterface2FWS2RWD>::set_hardware_state_()
   state.frontRightWheelSteeringAngle = front_right_wheel_steering_angle_measure_;
   state.rearLeftWheelSpinningMotion.velocity = rear_left_wheel_angular_speed_measure_;
   state.rearRightWheelSpinningMotion.velocity = rear_right_wheel_angular_speed_measure_;
-  this->hardware_interface_->set_state(state);
+  this->hardware_interface_->set_feedback(state);
 }
 
 //-----------------------------------------------------------------------------
@@ -315,14 +319,14 @@ void AlpoHardware<HardwareInterface2FWS4WD>::set_hardware_state_()
   state.frontRightWheelSpinningMotion.velocity = front_right_wheel_angular_speed_measure_;
   state.rearLeftWheelSpinningMotion.velocity = rear_left_wheel_angular_speed_measure_;
   state.rearRightWheelSpinningMotion.velocity = rear_right_wheel_angular_speed_measure_;
-  this->hardware_interface_->set_state(state);
+  this->hardware_interface_->set_feedback(state);
 }
 
 //-----------------------------------------------------------------------------
 template<>
 void AlpoHardware<HardwareInterface2FWS2RWD>::get_hardware_command_()
 {
-  core::HardwareCommand2FWS2RWD command = hardware_interface_->get_command();
+  core::HardwareCommand2FWS2RWD command = hardware_interface_->get_hardware_command();
 
   front_left_wheel_steering_angle_command_ = command.frontLeftWheelSteeringAngle;
   front_right_wheel_steering_angle_command_ = command.frontRightWheelSteeringAngle;
@@ -334,7 +338,7 @@ void AlpoHardware<HardwareInterface2FWS2RWD>::get_hardware_command_()
 template<>
 void AlpoHardware<HardwareInterface2FWS4WD>::get_hardware_command_()
 {
-  core::HardwareCommand2FWS4WD command = hardware_interface_->get_command();
+  core::HardwareCommand2FWS4WD command = hardware_interface_->get_hardware_command();
   front_left_wheel_steering_angle_command_ = command.frontLeftWheelSteeringAngle;
   front_right_wheel_steering_angle_command_ = command.frontRightWheelSteeringAngle;
   front_left_wheel_angular_speed_command_ = command.frontLeftWheelSpinningSetPoint;
