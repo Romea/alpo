@@ -2,9 +2,9 @@
 
 As the low-level interface of alpos robots runs under ROS 1, in order to communicate with them a bridge between ROS1 and ROS2 is provided in this package. This bridge is used to broadcast messages coming from the embedded joystick and robot's controller (wheel joint states and odometry information) and to send command to the robot.
 
-# 2 Node #
+# 2 Bridge node description
 
-## 2.1 ROS1 ##
+## 2.1 ROS1 side ##
 
 ### 2.1.1 Subscribed Topics ###
 
@@ -26,7 +26,7 @@ As the low-level interface of alpos robots runs under ROS 1, in order to communi
 
   This topic is send to alpo controller and contains ackermann command provided by high level algorithms
 
-## 2.2 ROS2 ##
+## 2.2 ROS2 side ##
 
 ### 2.2.1 Subscribed Topics ###
 
