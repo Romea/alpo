@@ -44,7 +44,7 @@ where:
 
 The default teleop configuration file can be found in the config directory of the **alpo_description** package, and the joystick mapping can be found in the config directory of the **romea_teleop_description** package. To move the robot you need to keep your finger pressed on either the slow mode or turbo mode button and use the sticks to control the speed and direction of the robot.
 
-[Controller mapping](doc/teleop.jpg)
+![Controller mapping](doc/teleop.jpg)
 
 ## 2.3 Test launch file
 
