@@ -1,8 +1,10 @@
-# 1 Overview #
+# Alpo Description #
+
+## 1 Overview ##
 
 This package contains the description of fat and slim alpo robots and to display them
 
-# 2 Package organization #
+## 2 Package organization ##
 
 This package is organized into subdirectories as follows:
 
@@ -16,4 +18,4 @@ This package is organized into subdirectories as follows:
 
   - launch/ contains scripts to display robots and test joints
 
-  - python/ contains a python module able to create urdf for each robot
+  - python/ contains a Python module able to create urdf for each robot
