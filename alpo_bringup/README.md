@@ -1,8 +1,8 @@
-# Alpo Bringup #
+# alpo_bringup #
 
 ## 1 Launch files ##
 
-The Alpo bringup package provides a suite of launch files enabling both manual and automated control of ALpo robots, either in real-time or in simulation, including their lifting systems. Two robot models are supported (see figure below): the Alpo POM, also referred to as Alpo Slim, and the Alpo 4x4, also known as Alpo Fat. The Alpo Slim model is equipped with a single front lifting system and two rear driving wheels, while the Alpo Fat model features two lifting systems, one at the front and one at the rear, along with four driving wheels.
+The alpo_bringup package provides a suite of launch files enabling both manual and automated control of Alpo robots, either in real-time or in simulation, including their lifting systems. Two robot models are supported (see figure below): the Alpo POM, also referred to as Alpo Slim, and the Alpo 4x4, also known as Alpo Fat. The Alpo Slim model is equipped with a single front lifting system and two rear driving wheels, while the Alpo Fat model features two lifting systems, one at the front and one at the rear, along with four driving wheels.
 
 | ![Controller mapping](doc/alpo_slim.jpg) | ![Controller mapping](doc/alpo_fat.jpg) |
 | ---------------------------------------- | --------------------------------------- |
@@ -71,7 +71,7 @@ Below, you can see the ROS pipeline when selecting the simulation mode with the 
 You can generate the URDF description of the Alpo robot using the **urdf_description.py** executable located in the scripts directory.
 
 ```console
-ros2 run alpo_bringup urdf_description.py robot_model:fat mode:simulation base_name:base robot_namespace:alpo
+ros2 run alpo_bringup urdf_description.py robot_model:fat mode:simulation base_name:base robot_namespace:alpo > alpo.urdf
 ```
 
 where:

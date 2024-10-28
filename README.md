@@ -1,4 +1,4 @@
-# Alpo #
+# alpo #
 
 This project contains several ROS2 packages for working with Alpo robots, both in real-world applications and simulations. For more detailed information, please refer to the README files of each individual package.
 
