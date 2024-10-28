@@ -2,6 +2,11 @@
 
 ## 1 Launch files ##
 
+The Alpo bringup package provides a suite of launch files enabling both manual and automated control of ALpo robots, either in real-time or in simulation, including their lifting systems. Two robot models are supported (see figure below): the Alpo POM, also referred to as Alpo Slim, and the Alpo 4x4, also known as Alpo Fat. The Alpo Slim model is equipped with a single front lifting system and two rear driving wheels, while the Alpo Fat model features two lifting systems, one at the front and one at the rear, along with four driving wheels.
+
+| ![Controller mapping](doc/alpo_slim.jpg) | ![Controller mapping](doc/alpo_fat.jpg) |
+| ---------------------------------------- | --------------------------------------- |
+
 ### 1.1 Base launch file ###
 
 The **alpo_base.launch.py** file, located in the launch directory, is responsible for starting the controller manager, the robot's controller, and a command multiplexer. The configuration of the controller manager and the robot controller are defined in the **controller_manager.yaml** and **mobile_base_controller.yaml** files, respectively, which are located in the config directory.
@@ -16,14 +21,10 @@ ros2 launch alpo_bringup alpo_base_launch.py mode:=simulation robot_namespace:=a
 
 where:
 - ***mode*** (choices: ***simulation*** or ***live***) defines the demonstration mode.  
-
 - ***robot_model*** (choices: ***fat*** or ***slim***) defines the robot model, with `fat` for 4WD Alpo and `slim` for 2WD Alpo.
-
 - ***robot_namespace*** (default: ***alpo***) sets the main ROS namespace where all Alpo nodes are launched. 
-
 - ***base_name*** (default: ***base***) sets the ROS sub-namespace in which controller nodes are launched
-
-  
+`
 
 ### 1.2 Teleop launch file ###
 
@@ -46,6 +47,8 @@ The default teleop configuration file can be found in the config directory of th
 
 ![Controller mapping](doc/teleop.jpg)
 
+TODO(Vincent & Jean) Implement control
+
 ## 2.3 Test launch file
 
 The **alpo_test.launch.py** file, located in the launch directory, is used to test the robot control pipeline in both live and simulation contexts. The following nodes are launched: controller manager, robot controller, joystick node, and teleop node using an Xbox joystick.
@@ -57,10 +60,11 @@ ros2 launch alpo_bringup alpo_test.launch.py robot_model:=fat mode:=simulation
 where:
 
 - ***mode*** (choices: ***simulation*** or ***live***) defines the demonstration mode,   
-
 - ***robot_model*** (choices: ***fat*** or ***slim***) defines the model of the robot, ***fat*** for 4WD ALPO and ***slim*** for 2WD ALPO
 
-  
+Below, you can see the ROS pipeline when selecting the simulation mode with the Alpo Fat robot. In live mode, the pipeline remains the same, except that the **gazebo_ros2_controller_manager** is replaced by a standard **ros2_controller_manager**. Additionally, when selecting the Alpo Slim robot, the **mobile_base_controller_slim**` is launched instead of the **mobile_base_controller_fat**.
+
+![Controller mapping](doc/test_pipeline.png)
 
 # 2 URDF description:
 
