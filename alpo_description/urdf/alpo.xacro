@@ -128,8 +128,8 @@
             value="${props['rear_wheels_speed_control']['command']['maximal_speed']}" />
       </xacro:if>
 
-      <xacro:property name="front_wheel_mass" value="5" />
-      <xacro:property name="rear_wheel_mass" value="5" />
+      <xacro:property name="front_wheel_mass" value="10" />
+      <xacro:property name="rear_wheel_mass" value="10" />
 
       <!-- Steering Properties -->
       <xacro:property name="minimal_wheel_steering_angle"
@@ -137,7 +137,7 @@
       <xacro:property name="maximal_wheel_steering_angle"
          value="${props['front_wheels_steering_control']['command']['maximal_angle']}" />
 
-      <xacro:property name="front_wheel_steering_link_mass" value="1" />
+      <xacro:property name="front_wheel_steering_link_mass" value="25" />
       <xacro:property name="front_wheel_steering_link_y" value="${front_hub_carrier_offset}" />
       <xacro:property name="front_wheel_steering_link_xz" value="0.05" />
 
