@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include "alpo_bridge.hpp"
 
 const char alpo_joy_topic[] = "/joy";
@@ -20,10 +19,15 @@ const char alpo_odom_topic[] = "/alpo_driver/ackermann_controller/odom";
 const char alpo_cmd_steer_topic[] = "/auto/cmd_steer";
 const char alpo_joint_states_topic[] = "/alpo_driver/joint_states";
 
+const char alpo_impl_front_cmd_topic[] = "/cylinder/front/interface/command";
+const char alpo_impl_rear_cmd_topic[] = "/cylinder/rear/interface/command";
+
 const char bridge_joy_topic[] = "~/joy";
 const char bridge_odom_topic[] = "~/vehicle_controller/odom";
 const char bridge_cmd_steer_topic[] = "~/vehicle_controller/cmd_steer";
 const char bridge_joint_states_topic[] = "~/vehicle_controller/joint_states";
+const char bridge_impl_front_cmd_topic[] = "~/cylinder/front/interface/command";
+const char bridge_impl_rear_cmd_topic[] = "~/cylinder/rear/interface/command";
 
 const rclcpp::QoS data_qos = rclcpp::SensorDataQoS().reliable();
 const rclcpp::QoS cmd_qos = rclcpp::QoS(rclcpp::KeepLast(1)).
@@ -48,6 +52,18 @@ void AlpoBridge::ros2_cmd_steer_callback_(const Ros2AckermannMsg::SharedPtr ros2
   ros1_msg.steering_angle = ros2_msg->steering_angle;
   ros1_msg.steering_angle_velocity = ros2_msg->steering_angle_velocity;
   ros1_cmd_steer_pub_.publish(ros1_msg);
+}
+
+//-----------------------------------------------------------------------------
+void AlpoBridge::ros2_impl_cmd_callback_(
+  const Ros2ImplCmdMsg::SharedPtr ros2_msg, const char * side)
+{
+  Ros1ImplCmdMsg ros1_msg;
+  ros1_msg.command = ros2_msg->command;
+  if (!strcmp(side, "front"))
+    ros1_impl_front_cmd_pub_.publish(ros1_msg);
+  else
+    ros1_impl_rear_cmd_pub_.publish(ros1_msg);
 }
 
 //-----------------------------------------------------------------------------
@@ -173,4 +189,16 @@ void AlpoBridge::init_ros2_subcription_()
 
   ros2_cmd_steer_sub_ = ros2_node_ptr_->create_subscription<Ros2AckermannMsg>(
     bridge_cmd_steer_topic, cmd_qos, callback, options);
+
+  auto impl_front_cmd_callback = [this](const Ros2ImplCmdMsg::SharedPtr msg) -> void {
+    ros2_impl_cmd_callback_(msg, "front");
+  };
+  ros2_impl_front_cmd_sub_ = ros2_node_ptr_->create_subscription<Ros2ImplCmdMsg>(
+    bridge_impl_front_cmd_topic, cmd_qos, impl_front_cmd_callback, options);
+
+  auto impl_rear_cmd_callback = [this](const Ros2ImplCmdMsg::SharedPtr msg) -> void {
+    ros2_impl_cmd_callback_(msg, "rear");
+  };
+  ros2_impl_rear_cmd_sub_ = ros2_node_ptr_->create_subscription<Ros2ImplCmdMsg>(
+    bridge_impl_rear_cmd_topic, cmd_qos, impl_rear_cmd_callback, options);
 }

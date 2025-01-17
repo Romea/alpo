@@ -25,6 +25,7 @@ if(${ROS_VERSION} EQUAL 1)
     find_package(geometry_msgs REQUIRED)
     find_package(ackermann_msgs REQUIRED)
     find_package(nav_msgs REQUIRED)
+    find_package(romea_implement_msgs REQUIRED)
 
     #find ROS 1 packages
     set(cmake_extras_files cmake/find_ros1_package.cmake cmake/find_ros1_interface_packages.cmake)
@@ -35,6 +36,7 @@ if(${ROS_VERSION} EQUAL 1)
     find_ros1_package(geometry_msgs)
     find_ros1_package(ackermann_msgs)
     find_ros1_package(nav_msgs)
+    find_ros1_package(linak_a36_msgs)
 
     add_executable(${PROJECT_NAME}_node
       src/alpo_bridge_node.cpp
@@ -46,11 +48,13 @@ if(${ROS_VERSION} EQUAL 1)
       sensor_msgs
       ackermann_msgs
       nav_msgs
+      romea_implement_msgs
       ros1_roscpp
       ros1_std_msgs
       ros1_sensor_msgs
       ros1_ackermann_msgs
       ros1_nav_msgs
+      ros1_linak_a36_msgs
     )
 
     install(TARGETS

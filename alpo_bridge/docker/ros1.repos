@@ -1,1 +1,5 @@
 repositories:
+  src/cylinder_interface:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:tiara/ros1/cylinder_interface.git
+    version: master

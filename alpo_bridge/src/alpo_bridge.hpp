@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef ALPO_BRIDGE_HPP_
 #define ALPO_BRIDGE_HPP_
 
@@ -28,6 +27,7 @@
 #include "sensor_msgs/JointState.h"
 #include "ackermann_msgs/AckermannDrive.h"
 #include "nav_msgs/Odometry.h"
+#include "linak_a36_msgs/CylinderCommand.h"
 
 // include ROS 2
 #include "rclcpp/rclcpp.hpp"
@@ -36,6 +36,8 @@
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "ackermann_msgs/msg/ackermann_drive.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "romea_implement_msgs/msg/command.hpp"
+#include "romea_implement_msgs/msg/state.hpp"
 
 
 using Ros1AckermannMsg = ackermann_msgs::AckermannDrive;
@@ -46,6 +48,8 @@ using Ros1OdomMsg = nav_msgs::Odometry;
 using Ros2OdomMsg = nav_msgs::msg::Odometry;
 using Ros1JointStatesMsg = sensor_msgs::JointState;
 using Ros2JointStatesMsg = sensor_msgs::msg::JointState;
+using Ros1ImplCmdMsg = linak_a36_msgs::CylinderCommand;
+using Ros2ImplCmdMsg = romea_implement_msgs::msg::Command;
 
 using Ros1NodePtr = std::shared_ptr<ros::NodeHandle>;
 using Ros2NodePtr = std::shared_ptr<rclcpp::Node>;
@@ -80,11 +84,18 @@ private:
   ros::Subscriber ros1_odom_sub_;
   ros::Subscriber ros1_joy_sub_;
 
+  // Implement topics
+  ros::Publisher ros1_impl_front_cmd_pub_;
+  ros::Publisher ros1_impl_rear_cmd_pub_;
+
   rclcpp::Publisher<Ros2JoyMsg>::SharedPtr ros2_joy_pub_;
   rclcpp::Publisher<Ros2OdomMsg>::SharedPtr ros2_odom_pub_;
   rclcpp::Publisher<Ros2JointStatesMsg>::SharedPtr ros2_joint_states_pub_;
   rclcpp::Subscription<Ros2AckermannMsg>::SharedPtr ros2_cmd_steer_sub_;
-};
 
+  // Implement topics
+  rclcpp::Subscription<Ros2ImplCmdMsg>::SharedPtr ros2_impl_front_cmd_sub_;
+  rclcpp::Subscription<Ros2ImplCmdMsg>::SharedPtr ros2_impl_rear_cmd_sub_;
+};
 
 #endif  // ALPO_BRIDGE_HPP_
