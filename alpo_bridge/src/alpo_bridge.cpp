@@ -30,15 +30,11 @@ const char bridge_impl_front_cmd_topic[] = "~/cylinder/front/interface/command";
 const char bridge_impl_rear_cmd_topic[] = "~/cylinder/rear/interface/command";
 
 const rclcpp::QoS data_qos = rclcpp::SensorDataQoS().reliable();
-const rclcpp::QoS cmd_qos = rclcpp::QoS(rclcpp::KeepLast(1)).
-  best_effort().durability_volatile();
+const rclcpp::QoS cmd_qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort().durability_volatile();
 
 //-----------------------------------------------------------------------------
-AlpoBridge::AlpoBridge(
-  Ros1NodePtr ros1_node_ptr,
-  Ros2NodePtr ros2_node_ptr)
-: ros1_node_ptr_(ros1_node_ptr),
-  ros2_node_ptr_(ros2_node_ptr)
+AlpoBridge::AlpoBridge(Ros1NodePtr ros1_node_ptr, Ros2NodePtr ros2_node_ptr)
+: ros1_node_ptr_(ros1_node_ptr), ros2_node_ptr_(ros2_node_ptr)
 {
 }
 
@@ -55,8 +51,7 @@ void AlpoBridge::ros2_cmd_steer_callback_(const Ros2AckermannMsg::SharedPtr ros2
 }
 
 //-----------------------------------------------------------------------------
-void AlpoBridge::ros2_impl_cmd_callback_(
-  const Ros2ImplCmdMsg::SharedPtr ros2_msg, const char * side)
+void AlpoBridge::ros2_impl_cmd_callback_(const Ros2ImplCmdMsg::SharedPtr ros2_msg, const char * side)
 {
   Ros1ImplCmdMsg ros1_msg;
   ros1_msg.command = ros2_msg->command;
@@ -93,10 +88,7 @@ void AlpoBridge::ros1_odometry_callback_(const Ros1OdomMsg::ConstPtr & ros1_msg)
   ros2_msg.pose.pose.orientation.z = ros1_msg->pose.pose.orientation.z;
   ros2_msg.pose.pose.orientation.w = ros1_msg->pose.pose.orientation.w;
 
-  std::copy(
-    ros1_msg->pose.covariance.begin(),
-    ros1_msg->pose.covariance.end(),
-    ros2_msg.pose.covariance.begin());
+  std::copy(ros1_msg->pose.covariance.begin(), ros1_msg->pose.covariance.end(), ros2_msg.pose.covariance.begin());
 
   ros2_msg.twist.twist.linear.x = ros1_msg->twist.twist.linear.x;
   ros2_msg.twist.twist.linear.y = ros1_msg->twist.twist.linear.y;
@@ -105,10 +97,7 @@ void AlpoBridge::ros1_odometry_callback_(const Ros1OdomMsg::ConstPtr & ros1_msg)
   ros2_msg.twist.twist.angular.y = ros1_msg->twist.twist.angular.y;
   ros2_msg.twist.twist.angular.z = ros1_msg->twist.twist.angular.z;
 
-  std::copy(
-    ros1_msg->twist.covariance.begin(),
-    ros1_msg->twist.covariance.end(),
-    ros2_msg.twist.covariance.begin());
+  std::copy(ros1_msg->twist.covariance.begin(), ros1_msg->twist.covariance.end(), ros2_msg.twist.covariance.begin());
 
   ros2_odom_pub_->publish(ros2_msg);
 }
@@ -135,14 +124,11 @@ void AlpoBridge::start()
   init_ros2_subcription_();
 
   RCLCPP_INFO_STREAM(
-    ros2_node_ptr_->get_logger(),
-    "Create sub 2 -> 1: " << bridge_cmd_steer_topic << " -> " << alpo_cmd_steer_topic);
+    ros2_node_ptr_->get_logger(), "Create sub 2 -> 1: " << bridge_cmd_steer_topic << " -> " << alpo_cmd_steer_topic);
   RCLCPP_INFO_STREAM(
-    ros2_node_ptr_->get_logger(),
-    "Create pub 2 <- 1: " << bridge_joy_topic << " -> " << alpo_joy_topic);
+    ros2_node_ptr_->get_logger(), "Create pub 2 <- 1: " << bridge_joy_topic << " -> " << alpo_joy_topic);
   RCLCPP_INFO_STREAM(
-    ros2_node_ptr_->get_logger(),
-    "Create pub 2 <- 1: " << bridge_odom_topic << " -> " << alpo_odom_topic);
+    ros2_node_ptr_->get_logger(), "Create pub 2 <- 1: " << bridge_odom_topic << " -> " << alpo_odom_topic);
   RCLCPP_INFO_STREAM(
     ros2_node_ptr_->get_logger(),
     "Create pub 2 <- 1: " << bridge_joint_states_topic << " -> " << alpo_joint_states_topic);
@@ -151,30 +137,26 @@ void AlpoBridge::start()
 //-----------------------------------------------------------------------------
 void AlpoBridge::init_ros1_publisher_()
 {
-  ros1_cmd_steer_pub_ = ros1_node_ptr_->
-    advertise<Ros1AckermannMsg>(alpo_cmd_steer_topic, 1);
+  ros1_cmd_steer_pub_ = ros1_node_ptr_->advertise<Ros1AckermannMsg>(alpo_cmd_steer_topic, 1);
+  ros1_impl_front_cmd_pub_ = ros1_node_ptr_->advertise<Ros1ImplCmdMsg>(alpo_impl_front_cmd_topic, 1);
+  ros1_impl_rear_cmd_pub_ = ros1_node_ptr_->advertise<Ros1ImplCmdMsg>(alpo_impl_rear_cmd_topic, 1);
 }
 
 //-----------------------------------------------------------------------------
 void AlpoBridge::init_ros2_publishers_()
 {
-  ros2_joy_pub_ = ros2_node_ptr_->
-    create_publisher<Ros2JoyMsg>(bridge_joy_topic, data_qos);
-  ros2_odom_pub_ = ros2_node_ptr_->
-    create_publisher<Ros2OdomMsg>(bridge_odom_topic, data_qos);
-  ros2_joint_states_pub_ = ros2_node_ptr_->
-    create_publisher<Ros2JointStatesMsg>(bridge_joint_states_topic, data_qos);
+  ros2_joy_pub_ = ros2_node_ptr_->create_publisher<Ros2JoyMsg>(bridge_joy_topic, data_qos);
+  ros2_odom_pub_ = ros2_node_ptr_->create_publisher<Ros2OdomMsg>(bridge_odom_topic, data_qos);
+  ros2_joint_states_pub_ = ros2_node_ptr_->create_publisher<Ros2JointStatesMsg>(bridge_joint_states_topic, data_qos);
 }
 
 //-----------------------------------------------------------------------------
 void AlpoBridge::init_ros1_subscriptions_()
 {
-  ros1_joint_states_sub_ = ros1_node_ptr_->subscribe(
-    alpo_joint_states_topic, 10, &AlpoBridge::ros1_joint_states_callback_, this);
-  ros1_odom_sub_ = ros1_node_ptr_->subscribe(
-    alpo_odom_topic, 10, &AlpoBridge::ros1_odometry_callback_, this);
-  ros1_joy_sub_ = ros1_node_ptr_->subscribe(
-    alpo_joy_topic, 10, &AlpoBridge::ros1_joy_callback_, this);
+  ros1_joint_states_sub_ =
+    ros1_node_ptr_->subscribe(alpo_joint_states_topic, 10, &AlpoBridge::ros1_joint_states_callback_, this);
+  ros1_odom_sub_ = ros1_node_ptr_->subscribe(alpo_odom_topic, 10, &AlpoBridge::ros1_odometry_callback_, this);
+  ros1_joy_sub_ = ros1_node_ptr_->subscribe(alpo_joy_topic, 10, &AlpoBridge::ros1_joy_callback_, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -183,12 +165,10 @@ void AlpoBridge::init_ros2_subcription_()
   rclcpp::SubscriptionOptions options;
   options.ignore_local_publications = true;
 
-  auto callback = std::bind(
-    &AlpoBridge::ros2_cmd_steer_callback_,
-    this, std::placeholders::_1);
+  auto callback = std::bind(&AlpoBridge::ros2_cmd_steer_callback_, this, std::placeholders::_1);
 
-  ros2_cmd_steer_sub_ = ros2_node_ptr_->create_subscription<Ros2AckermannMsg>(
-    bridge_cmd_steer_topic, cmd_qos, callback, options);
+  ros2_cmd_steer_sub_ =
+    ros2_node_ptr_->create_subscription<Ros2AckermannMsg>(bridge_cmd_steer_topic, cmd_qos, callback, options);
 
   auto impl_front_cmd_callback = [this](const Ros2ImplCmdMsg::SharedPtr msg) -> void {
     ros2_impl_cmd_callback_(msg, "front");
