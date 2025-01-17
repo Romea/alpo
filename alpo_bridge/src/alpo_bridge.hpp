@@ -74,6 +74,7 @@ private:
   void ros1_joint_states_callback_(const Ros1JointStatesMsg::ConstPtr & ros1_msg);
 
   void ros2_cmd_steer_callback_(const Ros2AckermannMsg::SharedPtr ros2_msg);
+  void ros2_impl_cmd_callback_(const Ros2ImplCmdMsg::SharedPtr ros2_msg, const char * side);
 
 private:
   Ros1NodePtr ros1_node_ptr_;
