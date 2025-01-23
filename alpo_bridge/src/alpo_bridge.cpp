@@ -148,6 +148,12 @@ void AlpoBridge::start()
     "Create sub 2 -> 1: " << bridge_cmd_steer_topic << " -> " << alpo_cmd_steer_topic);
   RCLCPP_INFO_STREAM(
     ros2_node_ptr_->get_logger(),
+    "Create sub 2 -> 1: " << bridge_impl_front_cmd_topic << " -> " << alpo_impl_front_cmd_topic);
+  RCLCPP_INFO_STREAM(
+    ros2_node_ptr_->get_logger(),
+    "Create sub 2 -> 1: " << bridge_impl_rear_cmd_topic << " -> " << alpo_impl_rear_cmd_topic);
+  RCLCPP_INFO_STREAM(
+    ros2_node_ptr_->get_logger(),
     "Create pub 2 <- 1: " << bridge_joy_topic << " -> " << alpo_joy_topic);
   RCLCPP_INFO_STREAM(
     ros2_node_ptr_->get_logger(),
