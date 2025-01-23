@@ -26,8 +26,8 @@ const char bridge_joy_topic[] = "~/joy";
 const char bridge_odom_topic[] = "~/vehicle_controller/odom";
 const char bridge_cmd_steer_topic[] = "~/vehicle_controller/cmd_steer";
 const char bridge_joint_states_topic[] = "~/vehicle_controller/joint_states";
-const char bridge_impl_front_cmd_topic[] = "~/cylinder/front/interface/command";
-const char bridge_impl_rear_cmd_topic[] = "~/cylinder/rear/interface/command";
+const char bridge_impl_front_cmd_topic[] = "implement/front/command";
+const char bridge_impl_rear_cmd_topic[] = "implement/rear/command";
 
 const rclcpp::QoS data_qos = rclcpp::SensorDataQoS().reliable();
 const rclcpp::QoS cmd_qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort().durability_volatile();
