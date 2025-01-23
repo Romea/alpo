@@ -52,21 +52,21 @@ void AlpoBridge::ros2_cmd_steer_callback_(const Ros2AckermannMsg::SharedPtr ros2
 
 //-----------------------------------------------------------------------------
 void AlpoBridge::ros2_impl_cmd_callback_(
-  const Ros2ImplCmdMsg::SharedPtr ros2_msg, const char * side)
+    const Ros2ImplCmdMsg::SharedPtr ros2_msg, const char * side)
 {
   Ros1ImplCmdMsg ros1_msg;
-  if (ros2_msg->command == ros2_msg->NONE) {
-    ros1_msg.command == ros1_msg.NONE;
-  } else if (ros2_msg->command == ros2_msg->STOP) {
-    ros1_msg.command == ros1_msg.STOP;
-  } else if (ros2_msg->command == ros2_msg->GO_DOWN) {
-    ros1_msg.command == ros1_msg.GO_DOWN;
-  } else if (ros2_msg->command == ros2_msg->GO_UP) {
-    ros1_msg.command == ros1_msg.GO_UP;
-  } else if (ros2_msg->command == ros2_msg->GO_TO_ANCHOR_LOW) {
-    ros1_msg.command == ros1_msg.GO_TO_ANCHOR_LOW;
-  } else if (ros2_msg->command == ros2_msg->GO_TO_ANCHOR_HIGH) {
-    ros1_msg.command == ros1_msg.GO_TO_ANCHOR_HIGH;
+  if (ros2_msg->command == Ros2ImplCmdMsg::NONE) {
+    ros1_msg.command = Ros1ImplCmdMsg::STOP;
+  } else if (ros2_msg->command == Ros2ImplCmdMsg::NONE) {
+    ros1_msg.command = Ros1ImplCmdMsg::STOP;
+  } else if (ros2_msg->command == Ros2ImplCmdMsg::GO_DOWN) {
+    ros1_msg.command = Ros1ImplCmdMsg::GO_DOWN;
+  } else if (ros2_msg->command == Ros2ImplCmdMsg::GO_UP) {
+    ros1_msg.command = Ros1ImplCmdMsg::GO_UP;
+  } else if (ros2_msg->command == Ros2ImplCmdMsg::GO_TO_ANCHOR_LOW) {
+    ros1_msg.command = Ros1ImplCmdMsg::GO_TO_ANCHOR_LOW;
+  } else if (ros2_msg->command == Ros2ImplCmdMsg::GO_TO_ANCHOR_HIGH) {
+    ros1_msg.command = Ros1ImplCmdMsg::GO_TO_ANCHOR_HIGH;
   }
 
   if (!strcmp(side, "front"))
