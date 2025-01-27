@@ -42,7 +42,7 @@
             <visual>
                 <material>
                     <script>
-                        <uri>package://alpo_description/meshes/pom.material</uri>
+                        <uri>model://alpo_description/meshes/pom.material</uri>
                         <name>alpo/pom</name>
                     </script>
                 </material>
