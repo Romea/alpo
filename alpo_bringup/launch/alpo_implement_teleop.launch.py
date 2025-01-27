@@ -40,6 +40,7 @@ def launch_setup(context, *args, **kwargs):
     joystick_topic = get_joystick_topic(context)
 
     implement_teleop_configuration = {}
+    implement_teleop_configuration["inverted"] = True
     implement_teleop_configuration["joystick_mapping"] = joystick_remapping(
         joystick_type, joystick_driver, get_default_joystick_implement_remapping(joystick_type)
     )
@@ -49,7 +50,8 @@ def launch_setup(context, *args, **kwargs):
         name="implement_teleop",
         parameters=[implement_teleop_configuration],
         output="screen",
-        remappings=[("joystick/joy", joystick_topic)],
+        remappings=[("joystick/joy", joystick_topic),
+            ("rear/command", "/robot/base/implement/rear/command")],
     )
 
     return [implement_teleop]
