@@ -53,3 +53,8 @@ RUN --mount=type=ssh vcs import -w6 <ros2.repos
 RUN ["/bin/bash", \
     "-c", \
     "source /ros_entrypoint.sh && ROS_VERSION=1 colcon build --symlink-install --packages-up-to alpo_bridge"]
+
+
+LABEL org.opencontainers.image.source=https://github.com/Romea/alpo
+LABEL org.opencontainers.image.description="bridge between ROS2 and ROS1 for low-level commands"
+LABEL org.opencontainers.image.licenses=Apache-2.0

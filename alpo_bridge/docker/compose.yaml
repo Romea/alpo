@@ -1,6 +1,6 @@
 services:
   bridge:
-    image: gitlab-registry.irstea.fr/romea_ros2/interfaces/vehicles/alpo/alpo_bridge
+    image: ghcr.io/romea/alpo
     build:
       context: ./
       ssh: [default]
