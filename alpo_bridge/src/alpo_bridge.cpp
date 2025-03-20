@@ -158,7 +158,7 @@ void AlpoBridge::ros1_battery_state_callback_(const Ros1BatteryStateMsg::ConstPt
   ros2_msg.cell_temperature = ros1_msg->cell_temperature;
   ros2_msg.location = ros1_msg->location;
   ros2_msg.serial_number = ros1_msg->serial_number;
-  ros2_joint_states_pub_->publish(ros2_msg);
+  ros2_battery_state_pub_->publish(ros2_msg);
 }
 //-----------------------------------------------------------------------------
 void AlpoBridge::start()

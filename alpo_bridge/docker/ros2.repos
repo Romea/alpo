@@ -2,7 +2,7 @@ repositories:
   src/alpo:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/alpo.git
-    version: implemnt
+    version: battery_status
   src/romea_implement:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/implements/romea_implement.git
