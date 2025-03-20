@@ -18,6 +18,7 @@ const char alpo_joy_topic[] = "/joy";
 const char alpo_odom_topic[] = "/alpo_driver/ackermann_controller/odom";
 const char alpo_cmd_steer_topic[] = "/auto/cmd_steer";
 const char alpo_joint_states_topic[] = "/alpo_driver/joint_states";
+const char alpo_battery_state_topic[] = "/power_supply/battery_status";
 
 const char alpo_impl_front_cmd_topic[] = "/cylinder/front/interface/command";
 const char alpo_impl_rear_cmd_topic[] = "/cylinder/rear/interface/command";
@@ -26,6 +27,7 @@ const char bridge_joy_topic[] = "~/joy";
 const char bridge_odom_topic[] = "~/vehicle_controller/odom";
 const char bridge_cmd_steer_topic[] = "~/vehicle_controller/cmd_steer";
 const char bridge_joint_states_topic[] = "~/vehicle_controller/joint_states";
+const char bridge_battery_state_topic[] = "~/power_supply/battery_status";
 const char bridge_impl_front_cmd_topic[] = "implement/front/command";
 const char bridge_impl_rear_cmd_topic[] = "implement/rear/command";
 
@@ -52,7 +54,7 @@ void AlpoBridge::ros2_cmd_steer_callback_(const Ros2AckermannMsg::SharedPtr ros2
 
 //-----------------------------------------------------------------------------
 void AlpoBridge::ros2_impl_cmd_callback_(
-    const Ros2ImplCmdMsg::SharedPtr ros2_msg, const char * side)
+  const Ros2ImplCmdMsg::SharedPtr ros2_msg, const char * side)
 {
   Ros1ImplCmdMsg ros1_msg;
   if (ros2_msg->command == Ros2ImplCmdMsg::NONE) {
@@ -136,6 +138,29 @@ void AlpoBridge::ros1_joint_states_callback_(const Ros1JointStatesMsg::ConstPtr 
 }
 
 //-----------------------------------------------------------------------------
+void AlpoBridge::ros1_battery_state_callback_(const Ros1BatteryStateMsg::ConstPtr & ros1_msg)
+{
+  Ros2BatteryStateMsg ros2_msg;
+  ros2_msg.header.stamp = ros2_node_ptr_->get_clock()->now();
+  ros2_msg.header.frame_id = ros1_msg->header.frame_id;
+  ros2_msg.voltage = ros1_msg->voltage;
+  ros2_msg.temperature = ros1_msg->temperature;
+  ros2_msg.current = ros1_msg->current;
+  ros2_msg.charge = ros1_msg->charge;
+  ros2_msg.capacity = ros1_msg->capacity;
+  ros2_msg.design_capacity = ros1_msg->design_capacity;
+  ros2_msg.percentage = ros1_msg->percentage;
+  ros2_msg.power_supply_status = ros1_msg->power_supply_status;
+  ros2_msg.power_supply_health = ros1_msg->power_supply_health;
+  ros2_msg.power_supply_technology = ros1_msg->power_supply_technology;
+  ros2_msg.present = ros1_msg->present;
+  ros2_msg.cell_voltage = ros1_msg->cell_voltage;
+  ros2_msg.cell_temperature = ros1_msg->cell_temperature;
+  ros2_msg.location = ros1_msg->location;
+  ros2_msg.serial_number = ros1_msg->serial_number;
+  ros2_joint_states_pub_->publish(ros2_msg);
+}
+//-----------------------------------------------------------------------------
 void AlpoBridge::start()
 {
   init_ros1_publisher_();
@@ -161,6 +186,9 @@ void AlpoBridge::start()
   RCLCPP_INFO_STREAM(
     ros2_node_ptr_->get_logger(),
     "Create pub 2 <- 1: " << bridge_joint_states_topic << " -> " << alpo_joint_states_topic);
+  RCLCPP_INFO_STREAM(
+    ros2_node_ptr_->get_logger(),
+    "Create pub 2 <- 1: " << bridge_battery_state_topic << " -> " << alpo_battery_state_topic);
 }
 
 //-----------------------------------------------------------------------------
@@ -179,11 +207,15 @@ void AlpoBridge::init_ros2_publishers_()
   ros2_odom_pub_ = ros2_node_ptr_->create_publisher<Ros2OdomMsg>(bridge_odom_topic, data_qos);
   ros2_joint_states_pub_ =
     ros2_node_ptr_->create_publisher<Ros2JointStatesMsg>(bridge_joint_states_topic, data_qos);
+  ros2_battery_state_pub_ =
+    ros2_node_ptr_->create_publisher<Ros2BatteryStateMsg>(bridge_battery_state_topic, data_qos);
 }
 
 //-----------------------------------------------------------------------------
 void AlpoBridge::init_ros1_subscriptions_()
 {
+  ros1_battery_state_sub_ = ros1_node_ptr_->subscribe(
+    alpo_battery_state_topic, 10, &AlpoBridge::ros1_battery_state_callback_, this);
   ros1_joint_states_sub_ = ros1_node_ptr_->subscribe(
     alpo_joint_states_topic, 10, &AlpoBridge::ros1_joint_states_callback_, this);
   ros1_odom_sub_ =

@@ -21,24 +21,25 @@
 #include <string>
 
 // include ROS 1
-#include "ros/ros.h"
-#include "std_msgs/String.h"
-#include "sensor_msgs/Joy.h"
-#include "sensor_msgs/JointState.h"
 #include "ackermann_msgs/AckermannDrive.h"
-#include "nav_msgs/Odometry.h"
 #include "linak_a36_msgs/CylinderCommand.h"
+#include "nav_msgs/Odometry.h"
+#include "ros/ros.h"
+#include "sensor_msgs/BatteryState.h"
+#include "sensor_msgs/JointState.h"
+#include "sensor_msgs/Joy.h"
+#include "std_msgs/String.h"
 
 // include ROS 2
-#include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-#include "sensor_msgs/msg/joy.hpp"
-#include "sensor_msgs/msg/joint_state.hpp"
 #include "ackermann_msgs/msg/ackermann_drive.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "rclcpp/rclcpp.hpp"
 #include "romea_implement_msgs/msg/command.hpp"
 #include "romea_implement_msgs/msg/state.hpp"
-
+#include "sensor_msgs/msg/battery_state.hpp"
+#include "sensor_msgs/msg/joint_state.hpp"
+#include "sensor_msgs/msg/joy.hpp"
+#include "std_msgs/msg/string.hpp"
 
 using Ros1AckermannMsg = ackermann_msgs::AckermannDrive;
 using Ros2AckermannMsg = ackermann_msgs::msg::AckermannDrive;
@@ -48,6 +49,8 @@ using Ros1OdomMsg = nav_msgs::Odometry;
 using Ros2OdomMsg = nav_msgs::msg::Odometry;
 using Ros1JointStatesMsg = sensor_msgs::JointState;
 using Ros2JointStatesMsg = sensor_msgs::msg::JointState;
+using Ros1BatteryStateMsg = sensor_msgs::BatteryState;
+using Ros2BatteryStateMsg = sensor_msgs::msg::BatteryState;
 using Ros1ImplCmdMsg = linak_a36_msgs::CylinderCommand;
 using Ros2ImplCmdMsg = romea_implement_msgs::msg::Command;
 
@@ -57,9 +60,7 @@ using Ros2NodePtr = std::shared_ptr<rclcpp::Node>;
 class AlpoBridge
 {
 public:
-  AlpoBridge(
-    Ros1NodePtr ros1_node_ptr,
-    Ros2NodePtr ros2_node_ptr);
+  AlpoBridge(Ros1NodePtr ros1_node_ptr, Ros2NodePtr ros2_node_ptr);
 
   void start();
 
@@ -71,6 +72,7 @@ private:
 
   void ros1_joy_callback_(const Ros1JoyMsg::ConstPtr ros1_msg);
   void ros1_odometry_callback_(const Ros1OdomMsg::ConstPtr & ros1_msg);
+  void ros1_battery_state_callback_(const Ros1BatteryStateMsg::ConstPtr & ros1_msg);
   void ros1_joint_states_callback_(const Ros1JointStatesMsg::ConstPtr & ros1_msg);
 
   void ros2_cmd_steer_callback_(const Ros2AckermannMsg::SharedPtr ros2_msg);
@@ -84,11 +86,13 @@ private:
   ros::Subscriber ros1_joint_states_sub_;
   ros::Subscriber ros1_odom_sub_;
   ros::Subscriber ros1_joy_sub_;
+  ros::Subscriber ros1_battery_state_sub_;
 
   // Implement topics
   ros::Publisher ros1_impl_front_cmd_pub_;
   ros::Publisher ros1_impl_rear_cmd_pub_;
 
+  rclcpp::Publisher<Ros2BatteryStateMsg>::SharedPtr ros2_battery_state_pub_;
   rclcpp::Publisher<Ros2JoyMsg>::SharedPtr ros2_joy_pub_;
   rclcpp::Publisher<Ros2OdomMsg>::SharedPtr ros2_odom_pub_;
   rclcpp::Publisher<Ros2JointStatesMsg>::SharedPtr ros2_joint_states_pub_;
