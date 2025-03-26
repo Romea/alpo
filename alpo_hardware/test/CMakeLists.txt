@@ -1,0 +1,2 @@
+add_executable(test_dithering_plot test_dithering_plot.cpp)
+target_link_libraries(test_dithering_plot ${PROJECT_NAME})

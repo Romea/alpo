@@ -32,10 +32,12 @@ add_library(
   ${PROJECT_NAME}
   SHARED
   src/alpo_hardware.cpp
+  src/deadzone_gaussian_noise.cpp
+  src/deadzone_dithering.cpp
 )
 target_include_directories(
   ${PROJECT_NAME}
-  PRIVATE
+  PUBLIC
   include
 )
 
@@ -105,11 +107,10 @@ ament_export_dependencies(
 )
 
 if(BUILD_TESTING)
-
   find_package(ament_lint_auto REQUIRED)
   list(APPEND AMENT_LINT_AUTO_EXCLUDE ament_cmake_copyright)
   ament_lint_auto_find_test_dependencies()
-
+  add_subdirectory(test)
 endif()
 
 ament_package()

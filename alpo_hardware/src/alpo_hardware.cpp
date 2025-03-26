@@ -12,32 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // std
 #include <limits>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 // romea
-#include "romea_common_utils/qos.hpp"
-#include "romea_mobile_base_utils/ros2_control/info/hardware_info_common.hpp"
-#include "romea_core_mobile_base/kinematic/wheel_steering/TwoWheelSteeringKinematic.hpp"
+#include <romea_common_utils/qos.hpp>
+#include <romea_core_mobile_base/kinematic/wheel_steering/TwoWheelSteeringKinematic.hpp>
+#include <romea_mobile_base_utils/ros2_control/info/hardware_info_common.hpp>
 
 // local
 #include "alpo_hardware/alpo_hardware.hpp"
-
+#include "alpo_hardware/deadzone_dithering.hpp"
+#include "alpo_hardware/deadzone_gaussian_noise.hpp"
 
 namespace
 {
 
-size_t joint_id(
-  const std::vector<std::string> joint_state_names,
-  const std::string & joint_name)
+size_t joint_id(const std::vector<std::string> joint_state_names, const std::string & joint_name)
 {
-  auto it = std::find(
-    joint_state_names.cbegin(),
-    joint_state_names.cend(),
-    joint_name);
+  auto it = std::find(joint_state_names.cbegin(), joint_state_names.cend(), joint_name);
 
   if (it == joint_state_names.end()) {
     throw std::runtime_error("Cannot find info of " + joint_name + " in joint_states msg");
@@ -47,15 +43,13 @@ size_t joint_id(
 }
 
 const double & position(
-  const sensor_msgs::msg::JointState & joint_states,
-  const std::string & joint_name)
+  const sensor_msgs::msg::JointState & joint_states, const std::string & joint_name)
 {
   return joint_states.position[joint_id(joint_states.name, joint_name)];
 }
 
 const double & velocity(
-  const sensor_msgs::msg::JointState & joint_states,
-  const std::string & joint_name)
+  const sensor_msgs::msg::JointState & joint_states, const std::string & joint_name)
 {
   return joint_states.velocity[joint_id(joint_states.name, joint_name)];
 }
@@ -97,7 +91,6 @@ AlpoHardware<HardwareInterface>::AlpoHardware()
   write_log_header_();
 #endif
 }
-
 
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
@@ -145,10 +138,33 @@ hardware_interface::return_type AlpoHardware<HardwareInterface>::load_info_(
     front_track_ = get_front_track(hardware_info);
     front_wheel_radius_ = get_front_wheel_radius(hardware_info);
     rear_wheel_radius_ = get_rear_wheel_radius(hardware_info);
+
+    load_deadzone_handler_(hardware_info);
+
     return hardware_interface::return_type::OK;
   } catch (std::runtime_error & e) {
     RCLCPP_FATAL_STREAM(node_->get_logger(), e.what());
     return hardware_interface::return_type::ERROR;
+  }
+}
+
+template<typename HardwareInterface>
+void AlpoHardware<HardwareInterface>::load_deadzone_handler_(
+  const hardware_interface::HardwareInfo & hardware_info)
+{
+  if (!get_parameter_or(hardware_info, "deadzone_enabled", false)) {
+    return;
+  }
+
+  std::string type = get_parameter(hardware_info, "deadzone_type");
+  if (type == "gaussian_noise") {
+    deadzone_ = std::make_unique<DeadzoneGaussianNoise>(hardware_info);
+  }
+  else if (type == "dithering") {
+    deadzone_ = std::make_unique<DeadzoneDithering>(hardware_info);
+  }
+  else {
+    throw std::runtime_error{"Invalid parameter: unknown deadzone_type '" + type + "'"};
   }
 }
 
@@ -157,9 +173,9 @@ template<typename HardwareInterface>
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 AlpoHardware<HardwareInterface>::on_init(const hardware_interface::HardwareInfo & hardware_info)
 {
-  if (hardware_interface::SystemInterface::on_init(hardware_info) !=
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS)
-  {
+  if (
+    hardware_interface::SystemInterface::on_init(hardware_info) !=
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS) {
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
   }
 
@@ -168,10 +184,9 @@ AlpoHardware<HardwareInterface>::on_init(const hardware_interface::HardwareInfo 
   std::cout << " hardware node_name " << ns << std::endl;
   node_ = rclcpp::Node::make_shared("hardware", ns);
 
-  if (this->load_info_(hardware_info) == hardware_interface::return_type::OK &&
-    this->load_interface_(hardware_info) == hardware_interface::return_type::OK)
-  {
-
+  if (
+    this->load_info_(hardware_info) == hardware_interface::return_type::OK &&
+    this->load_interface_(hardware_info) == hardware_interface::return_type::OK) {
     auto callback = std::bind(
       &AlpoHardware<HardwareInterface>::joint_states_callback_, this, std::placeholders::_1);
 
@@ -193,14 +208,17 @@ void AlpoHardware<HardwareInterface>::send_command_()
   ackermann_msgs::msg::AckermannDrive cmd;
 
   cmd.speed = 0.5 * rear_wheel_radius_ *
-    (rear_left_wheel_angular_speed_command_ +
-    rear_right_wheel_angular_speed_command_);
+              (rear_left_wheel_angular_speed_command_ + rear_right_wheel_angular_speed_command_);
 
-  cmd.steering_angle = core::TwoWheelSteeringKinematic::
-    computeSteeringAngle(
+  cmd.steering_angle = core::TwoWheelSteeringKinematic::computeSteeringAngle(
     front_left_wheel_steering_angle_command_,
     front_right_wheel_steering_angle_command_,
-    wheelbase_, front_track_);
+    wheelbase_,
+    front_track_);
+
+  if(deadzone_) {
+    cmd.steering_angle = deadzone_->adapt_steering_angle(cmd);
+  }
 
   cmd_steer_pub_->publish(cmd);
 }
@@ -212,18 +230,16 @@ void AlpoHardware<HardwareInterface>::send_null_command_()
   cmd_steer_pub_->publish(ackermann_msgs::msg::AckermannDrive());
 }
 
-
 //-----------------------------------------------------------------------------
 template<typename HardwareInteface>
 #if ROS_DISTRO == ROS_GALACTIC
 hardware_interface::return_type AlpoHardware<HardwareInteface>::read()
 #else
 hardware_interface::return_type AlpoHardware<HardwareInteface>::read(
-  const rclcpp::Time & /*time*/,
-  const rclcpp::Duration & /*period*/)
+  const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 #endif
 {
-//    RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Read data from robot");
+  //    RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Read data from robot");
   rclcpp::spin_some(node_);
 
   try {
@@ -238,18 +254,16 @@ hardware_interface::return_type AlpoHardware<HardwareInteface>::read(
   }
 }
 
-
 //-----------------------------------------------------------------------------
 template<typename HardwareInteface>
 #if ROS_DISTRO == ROS_GALACTIC
 hardware_interface::return_type AlpoHardware<HardwareInteface>::write()
-# else
+#else
 hardware_interface::return_type AlpoHardware<HardwareInteface>::write(
-  const rclcpp::Time & /*time*/,
-  const rclcpp::Duration & /*period*/)
+  const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 #endif
 {
-//  RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Send command to robot");
+  //  RCLCPP_INFO(rclcpp::get_logger("AlpoHardware"), "Send command to robot");
 
   get_hardware_command_();
   send_command_();
@@ -260,21 +274,15 @@ hardware_interface::return_type AlpoHardware<HardwareInteface>::write(
 //-----------------------------------------------------------------------------
 template<>
 void AlpoHardware<HardwareInterface2FWS4WD>::joint_states_callback_(
-  const sensor_msgs::msg::JointState::ConstSharedPtr msg)
+  sensor_msgs::msg::JointState::ConstSharedPtr msg)
 {
   // try {
-  front_left_wheel_steering_angle_measure_ =
-    position(*msg, "front_left_wheel_steering_joint");
-  front_right_wheel_steering_angle_measure_ =
-    position(*msg, "front_right_wheel_steering_joint");
-  front_left_wheel_angular_speed_measure_ =
-    velocity(*msg, "front_left_wheel_spinning_joint");
-  front_right_wheel_angular_speed_measure_ =
-    velocity(*msg, "front_right_wheel_spinning_joint");
-  rear_left_wheel_angular_speed_measure_ =
-    velocity(*msg, "rear_left_wheel_spinning_joint");
-  rear_right_wheel_angular_speed_measure_ =
-    velocity(*msg, "rear_right_wheel_spinning_joint");
+  front_left_wheel_steering_angle_measure_ = position(*msg, "front_left_wheel_steering_joint");
+  front_right_wheel_steering_angle_measure_ = position(*msg, "front_right_wheel_steering_joint");
+  front_left_wheel_angular_speed_measure_ = velocity(*msg, "front_left_wheel_spinning_joint");
+  front_right_wheel_angular_speed_measure_ = velocity(*msg, "front_right_wheel_spinning_joint");
+  rear_left_wheel_angular_speed_measure_ = velocity(*msg, "rear_left_wheel_spinning_joint");
+  rear_right_wheel_angular_speed_measure_ = velocity(*msg, "rear_right_wheel_spinning_joint");
   // } catch (std::runtime_error & e) {
   // std::stringstream msg;
 
@@ -287,14 +295,10 @@ template<>
 void AlpoHardware<HardwareInterface2FWS2RWD>::joint_states_callback_(
   const sensor_msgs::msg::JointState::ConstSharedPtr msg)
 {
-  front_left_wheel_steering_angle_measure_ =
-    position(*msg, "front_left_wheel_steering_joint");
-  front_right_wheel_steering_angle_measure_ =
-    position(*msg, "front_right_wheel_steering_joint");
-  rear_left_wheel_angular_speed_measure_ =
-    velocity(*msg, "rear_left_wheel_spinning_joint");
-  rear_right_wheel_angular_speed_measure_ =
-    velocity(*msg, "rear_right_wheel_spinning_joint");
+  front_left_wheel_steering_angle_measure_ = position(*msg, "front_left_wheel_steering_joint");
+  front_right_wheel_steering_angle_measure_ = position(*msg, "front_right_wheel_steering_joint");
+  rear_left_wheel_angular_speed_measure_ = velocity(*msg, "rear_left_wheel_spinning_joint");
+  rear_right_wheel_angular_speed_measure_ = velocity(*msg, "rear_right_wheel_spinning_joint");
 }
 
 //-----------------------------------------------------------------------------
@@ -354,8 +358,7 @@ template<typename HardwareInterface>
 void AlpoHardware<HardwareInterface>::open_log_file_()
 {
   debug_file_.open(
-    std::string("alpo.dat").c_str(),
-    std::fstream::in | std::fstream::out | std::fstream::trunc);
+    std::string("alpo.dat").c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
 }
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
@@ -403,7 +406,6 @@ template class AlpoHardware<HardwareInterface2FWS2RWD>;
 
 }  // namespace ros2
 }  // namespace romea
-
 
 #include "pluginlib/class_list_macros.hpp"
 PLUGINLIB_EXPORT_CLASS(romea::ros2::AlpoHardware2FWS4WD, hardware_interface::SystemInterface)

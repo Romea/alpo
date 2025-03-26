@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #ifndef ALPO_HARDWARE__ALPO_HARDWARE_HPP_
 #define ALPO_HARDWARE__ALPO_HARDWARE_HPP_
 
@@ -21,24 +20,28 @@
 #include <fstream>
 
 // romea
-#include "romea_common_utils/ros_versions.hpp"
-#include "romea_mobile_base_hardware/hardware_system_interface.hpp"
+#include <memory>
+#include <romea_common_utils/ros_versions.hpp>
+#include <romea_mobile_base_hardware/hardware_system_interface.hpp>
 
 // ros2
-#include "rclcpp/macros.hpp"
-#include "rclcpp/rclcpp.hpp"
-#include "sensor_msgs/msg/joint_state.hpp"
-#include "ackermann_msgs/msg/ackermann_drive.hpp"
+#include <ackermann_msgs/msg/ackermann_drive.hpp>
+#include <rclcpp/macros.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/joint_state.hpp>
 
+// local
+#include "alpo_hardware/deadzone_handler.hpp"
 
-namespace romea
-{
-namespace ros2
+namespace romea::ros2
 {
 
 template<typename HardwareInterface>
 class AlpoHardware : public HardwareSystemInterface<HardwareInterface>
 {
+public:
+  using DeadzoneHandlerPtr = std::unique_ptr<DeadzoneHandler>;
+
 public:
   RCLCPP_SHARED_PTR_DEFINITIONS(AlpoHardware);
 
@@ -47,17 +50,15 @@ public:
   virtual ~AlpoHardware();
 
 #if ROS_DISTRO == ROS_GALACTIC
-  hardware_interface::return_type read()override;
+  hardware_interface::return_type read() override;
 
-  hardware_interface::return_type write()override;
+  hardware_interface::return_type write() override;
 #else
   hardware_interface::return_type read(
-    const rclcpp::Time & time,
-    const rclcpp::Duration & period)override;
+    const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
   hardware_interface::return_type write(
-    const rclcpp::Time & time,
-    const rclcpp::Duration & period)override;
+    const rclcpp::Time & time, const rclcpp::Duration & period) override;
 #endif
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_init(
@@ -71,7 +72,9 @@ private:
   hardware_interface::return_type load_info_(
     const hardware_interface::HardwareInfo & hardware_info) override;
 
-  void joint_states_callback_(const sensor_msgs::msg::JointState::ConstSharedPtr msg);
+  void load_deadzone_handler_(const hardware_interface::HardwareInfo & hardware_info);
+
+  void joint_states_callback_(sensor_msgs::msg::JointState::ConstSharedPtr msg);
 
   void send_command_();
 
@@ -81,7 +84,6 @@ private:
 
   void set_hardware_state_();
 
-
 #ifndef NDEBUG
   void open_log_file_();
   void write_log_header_();
@@ -89,6 +91,8 @@ private:
 #endif
 
 private:
+  DeadzoneHandlerPtr deadzone_;
+
   float front_wheel_radius_;
   float rear_wheel_radius_;
   double wheelbase_;
@@ -120,7 +124,6 @@ private:
 using AlpoHardware2FWS4WD = AlpoHardware<HardwareInterface2FWS4WD>;
 using AlpoHardware2FWS2RWD = AlpoHardware<HardwareInterface2FWS2RWD>;
 
-}  // namespace ros2
-}  // namespace romea
+}  // namespace romea::ros2
 
 #endif  // ALPO_HARDWARE__ALPO_HARDWARE_HPP_
