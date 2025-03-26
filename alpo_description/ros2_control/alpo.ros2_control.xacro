@@ -1,8 +1,16 @@
 <?xml version="1.0"?>
 <robot name="alpo" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="alpo_ros2_control" params="model mode prefix base_name">
+  <!-- recursive macro to generate the list of params for hardware_options -->
+  <xacro:macro name="generate_hardware_options" params="options:=^ prefix:=^|''">
+    <xacro:if value="${options}">
+    <xacro:property name="option" value="${options.pop()}"/>
+      <param name="${prefix + option[0]}">${option[1]}</param>
+      <xacro:generate_hardware_options/>
+    </xacro:if>
+  </xacro:macro>
 
+  <xacro:macro name="alpo_ros2_control" params="model mode prefix base_name">
 
     <xacro:if value="${model == 'fat'}">
       <xacro:include
@@ -16,7 +24,7 @@
 
 
     <xacro:property name="conf" value="$(find alpo_description)/config/alpo_${model}.yaml" />
-    <xacro:property name="props" value="${load_yaml(conf)}" />
+    <xacro:property name="props" value="${xacro.load_yaml(conf)}" />
 
 
     <!-- Joint names -->
@@ -56,6 +64,8 @@
 
     <xacro:property name="maximal_wheel_steering_angle"
       value="${props['front_wheels_steering_control']['command']['maximal_angle']}" />
+
+    <xacro:property name="has_deadzone_handler" value="${'deadzone_handler' in props}"/>
 
     <xacro:if value="${model == 'fat'}">
       <xacro:property name="maximal_wheel_speed"
@@ -105,7 +115,16 @@
       </xacro:if>
     </xacro:if>
 
-    <xacro:base_control mode="${mode}" base_name="${base_name}" />
+    <xacro:property name="hardware_options">
+      <param name="deadzone_enabled" value="${has_deadzone_handler}"/>
+      <xacro:if value="${has_deadzone_handler}">
+        <xacro:generate_hardware_options
+          options="${list(props['deadzone_handler'].items())}"
+          prefix="deadzone_"/>
+      </xacro:if>
+    </xacro:property>
+
+    <xacro:base_control mode="${mode}" base_name="${base_name}" has_hardware_options="1" />
 
   </xacro:macro>
 

@@ -64,3 +64,13 @@ links:
   front_right_wheel_spinning_link_name: front_right_wheel_spinning_link
   rear_left_wheel_spinning_link_name: rear_left_wheel_spinning_link
   rear_right_wheel_spinning_link_name: rear_right_wheel_spinning_link
+
+deadzone_handler:
+  # type: gaussian_noise
+  # std_dev: 0.03
+
+  type: dithering
+  size: 0.04
+  quantization_size: 0.04
+
+
