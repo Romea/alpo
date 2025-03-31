@@ -116,7 +116,7 @@
     </xacro:if>
 
     <xacro:property name="hardware_options">
-      <param name="deadzone_enabled" value="${has_deadzone_handler}"/>
+      <param name="deadzone_enabled">${has_deadzone_handler}</param>
       <xacro:if value="${has_deadzone_handler}">
         <xacro:generate_hardware_options
           options="${list(props['deadzone_handler'].items())}"

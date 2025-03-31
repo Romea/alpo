@@ -70,7 +70,7 @@ deadzone_handler:
   # std_dev: 0.03
 
   type: dithering
-  size: 0.04
+  size: 0.046
   quantization_size: 0.04
 
 
