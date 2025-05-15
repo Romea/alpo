@@ -5,13 +5,13 @@ geometry:
   front_axle:
     wheels_distance: 1.0
     wheels:
-      radius: 0.32
+      radius: 0.3584
       width: 0.2
       hub_carrier_offset: 0.02
   rear_axle:
     wheels_distance: 1.0
     wheels:
-      radius: 0.32
+      radius: 0.3584  # for flat tire (0.364 if not)
       width: 0.2
       hub_carrier_offset: 0.02
   aabb:
