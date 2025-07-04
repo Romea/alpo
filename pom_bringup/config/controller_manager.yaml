@@ -1,0 +1,12 @@
+/**:
+  ros__parameters:
+    update_rate: 100 # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    mobile_base_controller_4x4:
+      type: romea_mobile_base_controllers/MobileBaseController2FWS4WD
+
+    mobile_base_controller_basic:
+      type: romea_mobile_base_controllers/MobileBaseController2FWS2RWD

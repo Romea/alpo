@@ -1,6 +1,6 @@
-# alpo #
+# pom #
 
-This project contains several ROS2 packages for working with Alpo robots, both in real-world applications and simulations. For more detailed information, please refer to the README files of each individual package.
+This project contains several ROS2 packages for working with Pom robots, both in real-world applications and simulations. For more detailed information, please refer to the README files of each individual package.
 
 ## **Usage**
 
@@ -10,7 +10,7 @@ This project contains several ROS2 packages for working with Alpo robots, both i
 4. wget https://raw.githubusercontent.com/Romea/alpo/refs/heads/main/alpo_public.repos
 5. vcs import src < alpo_public.repos
 6. colcon build
-7. see bringup package to launch Alpo robot
+7. see bringup package to launch Pom robot
 
 ## **Contributing**
 
@@ -31,8 +31,8 @@ This project is released under the Apache License 2.0. See the LICENSE file for 
 
 ## **Authors**
 
- Alpo project was developed by **Jean Laneurit** in the context of TIARA ANR project.
+ Pom project was developed by **Jean Laneurit** in the context of TIARA ANR project.
 
 ## **Contact**
 
-If you have any questions or comments about Alpo project, please contact **[Jean Laneurit](mailto:jean.laneurit@inrae.fr)** 
+If you have any questions or comments about Pom project, please contact **[Jean Laneurit](mailto:jean.laneurit@inrae.fr)** 

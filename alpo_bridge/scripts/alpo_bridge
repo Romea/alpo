@@ -1,4 +1,0 @@
-#!/bin/bash
-SCRIPT_DIR=$(dirname -- "${BASH_SOURCE[0]}")
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/ros/noetic/lib"
-exec "$SCRIPT_DIR/alpo_bridge_node" $@

@@ -1,0 +1,17 @@
+<library path="pom_hardware">
+  <class name="pom_hardware/PomHardware2FWS4WD"
+    type="romea::ros2::PomHardware2FWS4WD"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface for 2FWS4WD Pom robots
+    </description>
+  </class>
+  <class name="pom_hardware/PomHardware2FWS2RWD"
+    type="romea::ros2::PomHardware2FWS2RWD"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface for 2FWS2RWD Pom robots
+    </description>
+  </class>
+
+</library>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="half_leg">
+    <xacro:macro name="half_leg" params="side *joint_origin">
+        <xacro:beige_gazebo link="${prefix}half_leg_${side}_link" />
+        <!-- half_leg / palonnier to keep front wheel on the ground -->
+        <link name="${prefix}half_leg_${side}_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="package://pom_description/meshes/half_leg.obj" />
+                </geometry>
+                <xacro:beige />
+            </visual>
+        </link>
+        <joint name="${prefix}half_leg_${side}_joint" type="fixed">
+            <xacro:insert_block name="joint_origin" />
+            <parent link="${prefix}base_link" />
+            <child link="${prefix}half_leg_${side}_link" />
+        </joint>
+
+        <xacro:pom_gazebo_material link="${prefix}half_leg_${side}_link" />
+    </xacro:macro>
+</robot>

@@ -1,0 +1,89 @@
+# Copyright 2022 INRAE, French National Research Institute for Agriculture, Food and Environment
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# import pytest
+import xml.etree.ElementTree as ET
+from pom_description import generate_urdf_description, generate_ros2_control_description
+
+
+def urdf_xml(mode, model):
+    prefix = "robot_"
+    ros_prefix = "/robot/"
+    base_name = "base"
+    controller_conf_yaml_file = mode + "_" + model + "_controller.yaml"
+
+    return ET.fromstring(
+        generate_urdf_description(
+            prefix, mode, base_name, model, controller_conf_yaml_file, ros_prefix
+        )
+    )
+
+
+def ros2_control_xml(mode, model):
+    prefix = "robot_"
+    base_name = "base"
+
+    return ET.fromstring(
+        generate_ros2_control_description(
+            prefix, mode, base_name, model
+        )
+    )
+
+
+def test_footprint_link_name():
+    assert urdf_xml("live", "basic").find("link").get("name") == "robot_base_footprint"
+
+
+def test_controller_filename_name():
+
+    assert (
+        urdf_xml("simulation", "basic").find("gazebo/plugin/parameters").text
+        == "simulation_basic_controller.yaml"
+    )
+
+
+def test_ros_namespace():
+
+    assert (
+        urdf_xml("simulation", "basic").find("gazebo/plugin/ros/namespace").text
+        == "/pom/base"
+    )
+
+
+def test_hardware_plugin_name():
+
+    assert (
+        ros2_control_xml("live", "4x4").find("ros2_control/hardware/plugin").text
+        == "pom_hardware/PomHardware2FWS4WD"
+    )
+
+    assert (
+        ros2_control_xml("live", "basic").find("ros2_control/hardware/plugin").text
+        == "pom_hardware/PomHardware2FWS2RWD"
+    )
+
+    assert (
+        ros2_control_xml("simulation", "4x4")
+        .find("ros2_control/hardware/plugin")
+        .text
+        == "romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD"
+    )
+
+    assert (
+        ros2_control_xml("simulation", "basic")
+        .find("ros2_control/hardware/plugin")
+        .text
+        == "romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD"
+    )

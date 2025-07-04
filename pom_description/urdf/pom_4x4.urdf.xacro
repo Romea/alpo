@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="pom_4x4" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="prefix" default="pom_" />
+  <xacro:arg name="mode" default="simulation" />
+  <xacro:arg name="base_name" default="base" />
+  <xacro:arg name="ros2_control_config_urdf_file" default="" />
+  <xacro:arg name="controller_manager_config_yaml_file" default="" />
+  <xacro:arg name="ros_prefix" default="/pom/" />
+
+  <xacro:include filename="$(find pom_description)/urdf/pom.xacro" />
+  <xacro:pom model="4x4" mode="$(arg mode)" prefix="$(arg prefix)" />
+
+  <xacro:include filename="$(find pom_description)/urdf/pom.simulation.xacro" />
+
+  <xacro:pom_simulation
+    mode="$(arg mode)"
+    base_name="$(arg base_name)"
+    ros_prefix="$(arg ros_prefix)"
+    controller_manager_config_yaml_file="$(arg controller_manager_config_yaml_file)" />
+
+</robot>

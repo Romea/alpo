@@ -17,20 +17,10 @@ before_script:
   - mkdir -p ${CI_PROJECT_DIR}/workspace/src
   - cd ${CI_PROJECT_DIR}/workspace
   - vcs import src < ${CI_PROJECT_DIR}/${CI_PROJECT_NAME}.repos
-  - rosdep install --from-paths src --ignore-src -y --as-root apt:false
   - set +e
   - vcs custom --git --args checkout ${CI_COMMIT_BRANCH}
   - set -e
-
-# galatic
-galactic_focal_build:
-  image: ros:galactic-ros-base-focal
-  stage: build
-  script:
-    - colcon build
-    - source install/setup.bash
-    - colcon test --packages-select alpo_bringup alpo_description alpo_hardware
-    - colcon test-result --verbose
+  - rosdep install --from-paths src --ignore-src -y --as-root apt:false
 
 # humble
 humble_jammy_build:
@@ -39,7 +29,7 @@ humble_jammy_build:
   script:
     - colcon build
     - source install/setup.bash
-    - colcon test --packages-select alpo_bringup alpo_description alpo_hardware
+    - colcon test --packages-select pom_bringup pom_description pom_hardware
     - colcon test-result --verbose
 # # docker bridge
 # docker_bridge_build:
