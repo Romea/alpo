@@ -24,6 +24,9 @@ repositories:
   romea_ros2/interfaces/vehicles/romea_mobile_base:
     type: git
     url: git@forge.inrae.fr:romea_ros2/interfaces/vehicles/romea_mobile_base.git
+  romea_ros2/interfaces/vehicles/implement:
+    type: git
+    url: git@forge.inrae.fr:romea_ros2/interfaces/implements/romea_implement.git
   romea_ros2/interfaces/vehicles/alpo:
     type: git
     url: git@forge.inrae.fr:romea_ros2/interfaces/vehicles/alpo.git
