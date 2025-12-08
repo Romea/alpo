@@ -33,7 +33,7 @@ public:
   using Distrib = std::uniform_real_distribution<double>;
 
 public:
-  DeadzoneDithering(const hardware_interface::HardwareInfo & hardware_info);
+  explicit DeadzoneDithering(const hardware_interface::HardwareInfo & hardware_info);
   DeadzoneDithering(double quantization_size, double deadzone_size);
 
   double adapt_steering_angle(const ackermann_msgs::msg::AckermannDrive &) override;
@@ -47,4 +47,4 @@ private:
 
 }  // namespace romea::ros2
 
-#endif
+#endif  // POM_HARDWARE__DEADZONE_DITHERING_HPP_

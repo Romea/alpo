@@ -7,7 +7,8 @@
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
-                    <mesh filename="package://pom_description/meshes/half_leg.obj" />
+                    <!-- <mesh filename="package://pom_description/meshes/half_leg.obj" /> -->
+                    <mesh filename="file://$(find pom_description)/meshes/half_leg.obj" />
                 </geometry>
                 <xacro:beige />
             </visual>

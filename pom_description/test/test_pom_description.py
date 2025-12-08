@@ -15,7 +15,8 @@
 
 # import pytest
 import xml.etree.ElementTree as ET
-from pom_description import generate_urdf_description, generate_ros2_control_description
+
+from pom_description import generate_ros2_control_description, generate_urdf_description
 
 
 def urdf_xml(mode, model):

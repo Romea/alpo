@@ -50,8 +50,10 @@ def launch_setup(context, *args, **kwargs):
         name="implement_teleop",
         parameters=[implement_teleop_configuration],
         output="screen",
-        remappings=[("joystick/joy", joystick_topic),
-            ("rear/command", "/robot/base/implement/rear/command")],
+        remappings=[
+            ("joystick/joy", joystick_topic),
+            ("rear/command", "/robot/base/implement/rear/command"),
+        ],
     )
 
     return [implement_teleop]

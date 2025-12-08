@@ -16,6 +16,7 @@ set(ROS_DISTRO "ROS_${ROS_DISTRO}")
 # find ros2 dependencies
 find_package(ament_cmake REQUIRED)
 find_package(hardware_interface REQUIRED)
+find_package(pal_statistics REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
@@ -42,13 +43,14 @@ target_include_directories(
 )
 
 target_compile_definitions(
-  ${PROJECT_NAME} 
-  PUBLIC 
+  ${PROJECT_NAME}
+  PUBLIC
   ROS_DISTRO=${ROS_DISTRO})
 
 ament_target_dependencies(
   ${PROJECT_NAME}
   hardware_interface
+  pal_statistics
   pluginlib
   rclcpp
   rclcpp_lifecycle

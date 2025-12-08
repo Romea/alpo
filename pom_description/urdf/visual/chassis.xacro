@@ -15,10 +15,12 @@
                 <origin xyz="0 0 0" rpy="0 0 ${-pi/2}" />
                 <geometry>
                     <xacro:if value="${model == '4x4'}">
-                        <mesh filename="package://pom_description/meshes/pom_4x4.obj" />
+                        <!-- <mesh filename="package://pom_description/meshes/pom_4x4.obj" /> -->
+                        <mesh filename="file://$(find pom_description)/meshes/pom_4x4.obj" />
                     </xacro:if>
                     <xacro:if value="${model == 'basic'}">
-                        <mesh filename="package://pom_description/meshes/pom_basic.obj" />
+                        <!-- <mesh filename="package://pom_description/meshes/pom_basic.obj" /> -->
+                        <mesh filename="file://$(find pom_description)/meshes/pom_basic.obj" />
                     </xacro:if>
                 </geometry>
             </xacro:if>

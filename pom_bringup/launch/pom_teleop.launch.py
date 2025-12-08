@@ -12,21 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ament_index_python.packages import get_package_share_directory
+
 from launch import LaunchDescription
 
 from launch.actions import (
-    IncludeLaunchDescription,
     DeclareLaunchArgument,
-    OpaqueFunction,
     GroupAction,
+    IncludeLaunchDescription,
+    OpaqueFunction,
 )
-
-from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import SetParameter
 
-from ament_index_python.packages import get_package_share_directory
 from pom_description import get_specifications_path_file
+import romea_common_meta_bringup.ros_launch as common
+import romea_joystick_meta_bringup.ros_launch as joystick
+# import romea_teleop_meta_bringup.launch as teleop
 
 
 def launch_setup(context, *args, **kwargs):
@@ -75,10 +78,10 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("mode"),
-            DeclareLaunchArgument("robot_model"),
-            DeclareLaunchArgument("joystick_configuration_file_path"),
-            DeclareLaunchArgument("joystick_topic"),
+            common.declare_mode(),
+            common.declare_robot_model(["4x4", "basic"]),
+            joystick.declare_joystick_topic(),
+            joystick.declare_joystick_configuration_file_path(),
             DeclareLaunchArgument(
                 "teleop_configuration_file_path",
                 default_value=default_teleop_configuration_file_path

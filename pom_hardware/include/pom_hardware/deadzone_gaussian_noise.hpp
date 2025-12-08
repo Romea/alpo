@@ -33,7 +33,7 @@ public:
   using Distrib = std::normal_distribution<double>;
 
 public:
-  DeadzoneGaussianNoise(const hardware_interface::HardwareInfo & hardware_info);
+  explicit DeadzoneGaussianNoise(const hardware_interface::HardwareInfo & hardware_info);
 
   double adapt_steering_angle(const ackermann_msgs::msg::AckermannDrive &) override;
 
@@ -45,4 +45,4 @@ private:
 
 }  // namespace romea::ros2
 
-#endif
+#endif  // POM_HARDWARE__DEADZONE_GAUSSIAN_NOISE_HPP_

@@ -69,7 +69,6 @@ int main(int argc, char * argv[])
   ros2_node_ptr->declare_parameter("override_ros1_master", true);
   auto override_param = ros2_node_ptr->get_parameter("override_ros1_master");
   bool override_ros1_master = override_param.get_value<bool>();
-  // RCLCPP_INFO_STREAM(ros2_node_ptr->get_logger(), "override_ros1_master: " << override_ros1_master);
 
   ros::M_string remappings;
 

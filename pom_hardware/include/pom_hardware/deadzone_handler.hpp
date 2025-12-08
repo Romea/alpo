@@ -32,4 +32,4 @@ public:
 
 }  // namespace romea::ros2
 
-#endif
+#endif  // POM_HARDWARE__DEADZONE_HANDLER_HPP_
