@@ -1,58 +1,83 @@
-FROM amd64/ros:galactic-ros-base-focal
+ARG FROM_IMAGE=ros:humble
+FROM ${FROM_IMAGE}
 
-ENV ROS1_DISTRO noetic
-ENV ROS2_DISTRO galactic
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends \
+        curl \
+        ca-certificates \
         openssh-client \
-        python3-catkin-tools \
-        curl && \
-    rm -rf /var/lib/apt/lists/*
+        # python3-catkin-tools \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN echo 'deb http://packages.ros.org/ros/ubuntu focal main' \
-        >/etc/apt/sources.list.d/ros1-latest.list && \
-    curl -s 'https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc' | apt-key add -
+# add ros one repositories
+RUN curl -sSL https://ros.packages.techfak.net/gpg.key -o /etc/apt/keyrings/ros-one-keyring.gpg \
+    && . /etc/os-release \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/ros-one-keyring.gpg] https://ros.packages.techfak.net $VERSION_CODENAME main" \
+        | tee /etc/apt/sources.list.d/ros1.list
 
-RUN mkdir -pm 700 ~/.ssh && \
-    ssh-keyscan github.com >>~/.ssh/known_hosts && \
-    ssh-keyscan gitlab-ssh.irstea.fr >>~/.ssh/known_hosts && \
-    mkdir -p /ros1_ws /ros2_ws
+# install ros one
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+        ros-one-ros-core \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ros-noetic-ros-comm \
-        ros-noetic-actionlib-msgs \
-        ros-noetic-ackermann-msgs \
-        ros-noetic-sensor-msgs \
-        ros-noetic-nav-msgs \
-        ros-noetic-tf \
-        ros-galactic-actionlib-msgs \
-        ros-galactic-ackermann-msgs \
-        ros-galactic-sensor-msgs \
-        ros-galactic-nav-msgs \
-        ros-galactic-tf2-msgs \
-        && \
-    rm -rf /var/lib/apt/lists/*
+RUN mkdir -pm 700 ~/.ssh \
+    && ssh-keyscan github.com >>~/.ssh/known_hosts \
+    && ssh-keyscan forge.inrae.fr >>~/.ssh/known_hosts
+
+# import ros1 packages (only keep msgs)
+RUN --mount=type=bind,source=docker/ros1.repos,target=/ros1_ws/ros1.repos \
+    --mount=type=ssh \
+    cd /ros1_ws \
+    && vcs import -w6 <ros1.repos \
+    && find src/romea_path -mindepth 1 -maxdepth 1 ! -name '*msgs' | xargs rm -rf
+
+# import ros2 packages (only keep msgs)
+RUN --mount=type=bind,source=docker/ros2.repos,target=/ros2_ws/ros2.repos \
+    --mount=type=ssh \
+    cd /ros2_ws \
+    && vcs import -w6 <ros2.repos \
+    && find src/romea_path -mindepth 1 -maxdepth 1 ! -name '*msgs' | xargs rm -rf
+
+# install dependencies
+RUN --mount=type=bind,source=package.xml,target=/tmp/bridge/package.xml \
+    apt-get update \
+    # && apt-get install -y --no-install-recommends \
+    #     ros-one-actionlib-msgs \
+    #     ros-one-ackermann-msgs \
+    #     ros-one-sensor-msgs \
+    #     ros-one-nav-msgs \
+    && rosdep update \
+    && rosdep install -iyr --from-paths /ros2_ws /tmp/bridge \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /ros1_ws
-COPY ./ros1.repos ros1.repos
-COPY ./ros_entrypoint_ros1.sh /ros_entrypoint.sh
-RUN --mount=type=ssh \
-    mkdir -p src && \
-    vcs import -w6 <ros1.repos && \
-    find src/romea_path -mindepth 1 -maxdepth 1 ! -name '*msgs' | xargs rm -rf
-RUN catkin init && \
-    catkin config --extend /opt/ros/noetic && \
-    catkin build
+RUN unset ROS_DISTRO \
+    && . /opt/ros/one/setup.sh \
+    && catkin_make install \
+    && rm -rf build devel src
 
 WORKDIR /ros2_ws
-COPY ./ros2.repos ros2.repos
-COPY ./ros_entrypoint_ros1_ros2.sh /ros_entrypoint.sh
-RUN --mount=type=ssh vcs import -w6 <ros2.repos
-RUN ["/bin/bash", \
-    "-c", \
-    "source /ros_entrypoint.sh && ROS_VERSION=1 colcon build --symlink-install --packages-up-to pom_bridge"]
+RUN . /opt/ros/${ROS_DISTRO}/local_setup.sh \
+    && colcon --log-base /dev/null build \
+    && rm -rf build src
+
+# override entrypoint
+COPY docker/entrypoint.sh /ros_entrypoint.sh
+
+# debug
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#         gdbserver
+
+# compile this package (the bridge)
+WORKDIR /bridge_ws
+RUN --mount=type=bind,source=.,target=/bridge_ws/src/bridge \
+    ROS2_DISTRO=${ROS_DISTRO} \
+    && . /ros1_ws/install/setup.sh \
+    && . /opt/ros/${ROS2_DISTRO}/local_setup.sh \
+    && . /ros2_ws/install/local_setup.sh \
+    && ROS_VERSION=1 colcon --log-base /dev/null build --cmake-args -DCMAKE_BUILD_TYPE=Debug \
+    && rm -rf build
 
 
 LABEL org.opencontainers.image.source=https://github.com/Romea/alpo
