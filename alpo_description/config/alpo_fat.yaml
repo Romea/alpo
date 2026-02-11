@@ -38,7 +38,7 @@ wheels_speed_control:
     speed_range: 3.0
 
 inertia:
-  mass: 800.
+  mass: 1220.
   center: [-0.1, 0.0, 0.2]
   z_moment: 0.
 
