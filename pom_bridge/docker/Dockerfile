@@ -42,11 +42,6 @@ RUN --mount=type=bind,source=docker/ros2.repos,target=/ros2_ws/ros2.repos \
 # install dependencies
 RUN --mount=type=bind,source=package.xml,target=/tmp/bridge/package.xml \
     apt-get update \
-    # && apt-get install -y --no-install-recommends \
-    #     ros-one-actionlib-msgs \
-    #     ros-one-ackermann-msgs \
-    #     ros-one-sensor-msgs \
-    #     ros-one-nav-msgs \
     && rosdep update \
     && rosdep install -iyr --from-paths /ros2_ws /tmp/bridge \
     && rm -rf /var/lib/apt/lists/*
@@ -65,10 +60,6 @@ RUN . /opt/ros/${ROS_DISTRO}/local_setup.sh \
 # override entrypoint
 COPY docker/entrypoint.sh /ros_entrypoint.sh
 
-# debug
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#         gdbserver
-
 # compile this package (the bridge)
 WORKDIR /bridge_ws
 RUN --mount=type=bind,source=.,target=/bridge_ws/src/bridge \
@@ -78,6 +69,10 @@ RUN --mount=type=bind,source=.,target=/bridge_ws/src/bridge \
     && . /ros2_ws/install/local_setup.sh \
     && ROS_VERSION=1 colcon --log-base /dev/null build --cmake-args -DCMAKE_BUILD_TYPE=Debug \
     && rm -rf build
+
+# debug
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#         gdbserver
 
 
 LABEL org.opencontainers.image.source=https://github.com/Romea/alpo
