@@ -59,7 +59,7 @@ def test_ros_namespace():
 
     assert (
         urdf_xml("simulation", "basic").find("gazebo/plugin/ros/namespace").text
-        == "/pom/base"
+        == "/robot/base"
     )
 
 
