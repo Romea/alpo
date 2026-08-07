@@ -77,7 +77,60 @@
         value="${props['rear_wheels_speed_control']['command']['maximal_speed']}" />
     </xacro:if>
 
+
     <!-- simulation plugins -->
+    <xacro:if value="${mode == 'simulation_gazebo'}">
+      <xacro:property
+        name="hardware_plugin"
+        value="romea_mobile_base_gazebo/GazeboSystemInterface" />
+    </xacro:if>
+
+    <xacro:if value="${mode == 'simulation_gazebo_classic'}">
+      <xacro:if value="${model == '4x4'}">
+        <xacro:property
+          name="hardware_plugin"
+          value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD" />
+      </xacro:if>
+      <xacro:if value="${model == 'basic'}">
+        <xacro:property
+          name="hardware_plugin"
+          value="romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD" />
+      </xacro:if>
+    </xacro:if>
+
+    <xacro:if value="${'4dv' in mode or 'isaac' in mode}">
+      <xacro:property
+        name="hardware_plugin"
+        value="romea_mobile_base_simulation/GenericSimulationSystemInterface" />
+    </xacro:if>
+
+    <xacro:if value="${mode ==  'live'}">
+      <xacro:if value="${model == '4x4'}">
+        <xacro:property name="hardware_plugin" value="pom_hardware/PomHardware2FWS4WD" />
+      </xacro:if>
+      <xacro:if value="${model == 'basic'}">
+        <xacro:property name="hardware_plugin" value="pom_hardware/PomHardware2FWS2RWD" />
+      </xacro:if>
+    </xacro:if>
+
+    <xacro:property name="hardware_options">
+      <param name="deadzone_enabled">${has_deadzone_handler}</param>
+      <xacro:if value="${has_deadzone_handler}">
+        <xacro:generate_hardware_options
+          options="${list(props['deadzone_handler'].items())}"
+          prefix="deadzone_" />
+      </xacro:if>
+    </xacro:property>
+
+
+    <xacro:base_control
+      mode="${mode}"
+      base_name="${base_name}"
+      hardware_plugin="${hardware_plugin}"
+      has_hardware_options="1" />
+
+
+    <!-- simulation plugins
     <xacro:if value="${'simulation' in mode}">
       <xacro:if value="${'gazebo' in  mode}">
         <xacro:if value="${model == '4x4'}">
@@ -96,12 +149,12 @@
         <xacro:if value="${model == '4x4'}">
           <xacro:property
             name="simulation_hardware_plugin"
-            value="romea_mobile_base_simulation/GenericSimulationSystemInterface2FWS4WD" />
+            value="romea_mobile_base_simulation/GenericSimulationSystemInterface" />
         </xacro:if>
         <xacro:if value="${model == 'basic'}">
           <xacro:property
             name="simulation_hardware_plugin"
-            value="romea_mobile_base_simulation/GenericSimulationSystemInterface2FWS2RWD" />
+            value="romea_mobile_base_simulation/GenericSimulationSystemInterface" />
         </xacro:if>
       </xacro:if>
     </xacro:if>
@@ -113,9 +166,9 @@
       <xacro:if value="${model == 'basic'}">
         <xacro:property name="live_hardware_plugin" value="pom_hardware/PomHardware2FWS2RWD" />
       </xacro:if>
-    </xacro:if>
+    </xacro:if> -->
 
-    <xacro:property name="hardware_options">
+    <!-- <xacro:property name="hardware_options">
       <param name="deadzone_enabled">${has_deadzone_handler}</param>
       <xacro:if value="${has_deadzone_handler}">
         <xacro:generate_hardware_options
@@ -124,7 +177,7 @@
       </xacro:if>
     </xacro:property>
 
-    <xacro:base_control mode="${mode}" base_name="${base_name}" has_hardware_options="1" />
+    <xacro:base_control mode="${mode}" base_name="${base_name}" has_hardware_options="1" /> -->
 
   </xacro:macro>
 

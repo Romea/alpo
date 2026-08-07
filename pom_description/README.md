@@ -68,8 +68,8 @@ Depending on the selected mode, the `ros2_control` description selects:
 | `4x4` | `simulation`, `simulation_gazebo_classic` | `romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD` |
 | `basic` | `simulation_gazebo` | `romea_mobile_base_gazebo/GazeboSystemInterface2FWS2RWD` |
 | `4x4` | `simulation_gazebo` | `romea_mobile_base_gazebo/GazeboSystemInterface2FWS4WD` |
-| `basic` | `simulation_4dv`, `simulation_isaac` | `romea_mobile_base_simulation/GenericSimulationSystemInterface2FWS2RWD` |
-| `4x4` | `simulation_4dv`, `simulation_isaac` | `romea_mobile_base_simulation/GenericSimulationSystemInterface2FWS4WD` |
+| `basic` | `simulation_4dv`, `simulation_isaac` | `romea_mobile_base_simulation/GenericSimulationSystemInterface` |
+| `4x4` | `simulation_4dv`, `simulation_isaac` | `romea_mobile_base_simulation/GenericSimulationSystemInterface` |
 
 ## 4) Python API
 
