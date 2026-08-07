@@ -65,7 +65,7 @@ namespace ros2
 //-----------------------------------------------------------------------------
 template<typename HardwareInterface>
 PomHardware<HardwareInterface>::PomHardware()
-: HardwareSystemInterface<HardwareInterface>("PomHardware"),
+: HardwareSystemInterfaceLegacy<HardwareInterface>("PomHardware"),
   front_wheel_radius_(0),
   rear_wheel_radius_(0),
   front_left_wheel_steering_angle_measure_(0),

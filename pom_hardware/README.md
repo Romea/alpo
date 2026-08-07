@@ -10,8 +10,8 @@ The exported plugins are:
 
 | Plugin | Base class | Mobile base architecture |
 |---|---|---|
-| `pom_hardware/PomHardware2FWS2RWD` | `HardwareSystemInterface<HardwareInterface2FWS2RWD>` | `2FWS2RWD` |
-| `pom_hardware/PomHardware2FWS4WD` | `HardwareSystemInterface<HardwareInterface2FWS4WD>` | `2FWS4WD` |
+| `pom_hardware/PomHardware2FWS2RWD` | `HardwareSystemInterface2FWS2RWD` | `2FWS2RWD` |
+| `pom_hardware/PomHardware2FWS4WD` | `HardwareSystemInterface2FWS4WD` | `2FWS4WD` |
 
 ## 2) Hardware concept
 

@@ -37,7 +37,7 @@ namespace romea::ros2
 {
 
 template<typename HardwareInterface>
-class PomHardware : public HardwareSystemInterface<HardwareInterface>
+class PomHardware : public HardwareSystemInterfaceLegacy<HardwareInterface>
 {
 public:
   using DeadzoneHandlerPtr = std::unique_ptr<DeadzoneHandler>;
