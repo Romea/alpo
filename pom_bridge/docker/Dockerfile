@@ -18,6 +18,7 @@ RUN curl -sSL https://ros.packages.techfak.net/gpg.key -o /etc/apt/keyrings/ros-
 # install ros one
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+        ros-${ROS_DISTRO}-rmw-zenoh-cpp \
         ros-one-ros-core \
     && rm -rf /var/lib/apt/lists/*
 
