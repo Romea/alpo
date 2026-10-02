@@ -24,61 +24,10 @@
 
 
     <xacro:property name="conf" value="$(find pom_description)/config/pom_${model}.yaml" />
-    <xacro:property name="props" value="${xacro.load_yaml(conf)}" />
-
-
-    <!-- Joint names -->
-    <xacro:property name="base_footprint_joint"
-      value="${props['joints']['base_footprint_joint_name']}" />
-    <xacro:property name="inertial_joint" value="${props['joints']['inertial_joint_name']}" />
-    <xacro:property name="front_left_wheel_steering_joint"
-      value="${props['joints']['front_left_wheel_steering_joint_name']}" />
-    <xacro:property name="front_right_wheel_steering_joint"
-      value="${props['joints']['front_right_wheel_steering_joint_name']}" />
-    <xacro:property name="front_left_wheel_spinning_joint"
-      value="${props['joints']['front_left_wheel_spinning_joint_name']}" />
-    <xacro:property name="front_right_wheel_spinning_joint"
-      value="${props['joints']['front_right_wheel_spinning_joint_name']}" />
-    <xacro:property name="rear_left_wheel_spinning_joint"
-      value="${props['joints']['rear_left_wheel_spinning_joint_name']}" />
-    <xacro:property name="rear_right_wheel_spinning_joint"
-      value="${props['joints']['rear_right_wheel_spinning_joint_name']}" />
-
-
-    <!-- Geometry -->
-    <xacro:property name="wheelbase"
-      value="${props['geometry']['axles_distance']}" />
-    <xacro:property name="front_track"
-      value="${props['geometry']['front_axle']['wheels_distance']}" />
-    <xacro:property name="rear_track"
-      value="${props['geometry']['rear_axle']['wheels_distance']}" />
-    <xacro:property name="front_wheel_radius"
-      value="${props['geometry']['front_axle']['wheels']['radius']}" />
-    <xacro:property name="rear_wheel_radius"
-      value="${props['geometry']['rear_axle']['wheels']['radius']}" />
-    <xacro:property name="front_hub_carrier_offset"
-      value="${props['geometry']['front_axle']['wheels']['hub_carrier_offset']}" />
-    <xacro:property name="rear_hub_carrier_offset"
-      value="${props['geometry']['rear_axle']['wheels']['hub_carrier_offset']}" />
-
-
-    <xacro:property name="maximal_wheel_steering_angle"
-      value="${props['front_wheels_steering_control']['command']['maximal_angle']}" />
+    <xacro:include filename="$(find pom_description)/urdf/pom_properties.xacro" />
 
     <xacro:property name="has_deadzone_handler" value="${'deadzone_handler' in props}" />
 
-    <xacro:if value="${model == '4x4'}">
-      <xacro:property name="maximal_wheel_speed"
-        value="${props['wheels_speed_control']['command']['maximal_speed']}" />
-    </xacro:if>
-
-    <xacro:if value="${model == 'basic'}">
-      <xacro:property name="maximal_wheel_speed"
-        value="${props['rear_wheels_speed_control']['command']['maximal_speed']}" />
-    </xacro:if>
-
-
-    <!-- simulation plugins -->
     <xacro:if value="${mode == 'simulation_gazebo'}">
       <xacro:property
         name="hardware_plugin"
