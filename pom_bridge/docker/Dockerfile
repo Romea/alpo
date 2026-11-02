@@ -31,14 +31,14 @@ RUN --mount=type=bind,source=docker/ros1.repos,target=/ros1_ws/ros1.repos \
     --mount=type=ssh \
     cd /ros1_ws \
     && vcs import -w6 <ros1.repos \
-    && find src/romea_path -mindepth 1 -maxdepth 1 ! -name '*msgs' | xargs rm -rf
+    && find src -name package.xml -exec dirname '{}' \; | grep -v 'msgs$' | xargs rm -rf
 
 # import ros2 packages (only keep msgs)
 RUN --mount=type=bind,source=docker/ros2.repos,target=/ros2_ws/ros2.repos \
     --mount=type=ssh \
     cd /ros2_ws \
     && vcs import -w6 <ros2.repos \
-    && find src/romea_path -mindepth 1 -maxdepth 1 ! -name '*msgs' | xargs rm -rf
+    && find src -name package.xml -exec dirname '{}' \; | grep -v 'msgs$' | xargs rm -rf
 
 # install dependencies
 RUN --mount=type=bind,source=package.xml,target=/tmp/bridge/package.xml \
