@@ -3,4 +3,6 @@ include:
     file: ".gitlab-ci.yml"
 
 variables:
+  ROS_JAZZY_IMAGE: "osrf/ros:jazzy-desktop-full-noble"
+  ROS_LYRICAL_IMAGE: "osrf/ros:lyrical-desktop-full-resolute"
   PKGS_TO_BUILD_TEST: "pom_bringup pom_description pom_hardware"
